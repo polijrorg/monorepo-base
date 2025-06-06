@@ -2,6 +2,7 @@ import InitialNav from "@/components/nav/InitialNav";
 import Embarcar from "./Embarcar";
 import { headers } from "next/headers";
 import { auth } from "@/auth";
+import CarouselExample from "./CarouselExample";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -31,6 +32,8 @@ export default async function Home() {
       </main>
 
       <Embarcar isLogged={isLogged} />
+
+      <CarouselExample />
     </div>
   );
 }

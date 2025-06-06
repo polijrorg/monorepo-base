@@ -1,4 +1,4 @@
-import { mergeClasses } from "@/utils";
+import { cn } from "@/utils";
 import { ReactNode } from "react";
 
 import { type HTMLMotionProps } from "motion/react";
@@ -11,7 +11,7 @@ function CredentialsButton({ children, className, ...props }: BaseButtonProps & 
   return ( 
     <MotionButton 
       type="submit" 
-      className={mergeClasses("login-button relative text-pink-50 bg-pink-500", className)}
+      className={cn("login-button relative text-pink-50 bg-pink-500", className)}
       {...props}
     >
       <Mail className="w-[26px] h-[26px]" />

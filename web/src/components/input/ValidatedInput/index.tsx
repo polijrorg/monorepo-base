@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Check, X } from 'lucide-react';
 import styles from './input.module.css';
-import { mergeClasses, validateEmail } from '@/utils';
+import { cn, validateEmail } from '@/utils';
 import type { InputHTMLAttributes } from 'react';
 
 interface ValidatedInputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -76,16 +76,16 @@ function ValidatedInput({
   const inputCurrentValue = isControlled ? value : inputValue;
 
   return (
-    <div className={mergeClasses('flex flex-col', containerClassName)}>
-      <label className={mergeClasses('text-lg font-medium', labelClassName)} htmlFor={name}>
+    <div className={cn('flex flex-col', containerClassName)}>
+      <label className={cn('text-lg font-medium', labelClassName)} htmlFor={name}>
         {title}
         {children}
       </label>
 
-      <div className={mergeClasses('relative inline-block', inputContainerClassName)}>
+      <div className={cn('relative inline-block', inputContainerClassName)}>
         <input
           {...rest}
-          className={mergeClasses('outline-none text-slate-900 placeholder:text-gray-500', inputClassName)}
+          className={cn('outline-none text-slate-900 placeholder:text-gray-500', inputClassName)}
           type={type}
           name={name}
           id={name}
@@ -94,7 +94,7 @@ function ValidatedInput({
         />
 
         {showValid !== null && (
-          <span className={mergeClasses(styles.icon_container, iconContainerClassName)}>
+          <span className={cn(styles.icon_container, iconContainerClassName)}>
             {showValid ? (
               <Check className={`${styles.icon} ${styles.icon_valid}`} />
             ) : (

@@ -10,15 +10,20 @@ post {
   auth: none
 }
 
-headers {
-  Cookie: better-auth.session_token={{sessionValue}}
-}
-
 body:json {
   {
-    "name": "Nova Matéria",
-    "descricao": "Descrição da matéria",
-    "cor": "#FF0000",
-    "slug": "nova-materia"
+    "name": "Nova Matéri2",
+    "descricao": "Descriçã2 da matéria",
+    "cor": "#FF0002",
+    "slug": "nova-materia23",
+    "imgUrl": ""
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.id) {
+    bru.setVar("materiaId", res.body.id);
+  } else {
+    console.log("No ID found in response");
   }
 }

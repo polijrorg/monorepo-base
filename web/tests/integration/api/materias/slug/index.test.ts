@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest'
-import * as materiaService from '@/backend/services/materia'
+import * as materiaService from '@/backend/services/materias'
 import { GET } from '@/backend/api/materias/slug/[slug]/route'
 import { returnParams } from '../../../mocks/requests';
 
-vi.mock('@/backend/services/materia', () => ({
+vi.mock('@/backend/services/materias', () => ({
   getMateriaBySlug: vi.fn(),
 }))
 

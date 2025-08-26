@@ -12,8 +12,6 @@ enum Role {
   USER
   ADMIN
   SUPER_ADMIN
-  ESCOLA_PROFESSOR
-  ESCOLA_ADMIN
 }
 
 model User {
@@ -26,7 +24,6 @@ model User {
   role          Role      @default(USER)
   // < nao mexer 
 
-  userCursos UserCurso[] // Cursos que o user tá cursando
   createdAt  DateTime
   updatedAt  DateTime
   sessions   Session[]
@@ -42,21 +39,6 @@ model Curso {
   slug      String @unique
 
   materiasRelacionadas CursoMateriaRelacionada[]
-  cursoTopicos         CursoTopico[]
-  userCursos           UserCurso[]
-}
-
-model CursoTopico {
-  id    String @id @default(uuid()) @map("_id")
-  order Int    @default(0)
-
-  curso   Curso  @relation(fields: [cursoId], references: [id])
-  cursoId String
-
-  topico   Topico @relation(fields: [topicoId], references: [id])
-  topicoId String
-
-  @@unique([cursoId, topicoId])
 }
 
 model CursoMateriaRelacionada {
@@ -71,41 +53,13 @@ model CursoMateriaRelacionada {
   @@unique([cursoId, materiaId])
 }
 
-model UserCurso {
-  id        String  @id @default(uuid()) @map("_id")
-  completed Boolean @default(false)
-  user      User    @relation(fields: [userId], references: [id])
-  userId    String
-
-  curso   Curso  @relation(fields: [cursoId], references: [id])
-  cursoId String
-
-  dataMatricula DateTime @default(now())
-
-  @@unique([userId, cursoId])
-}
-
 model Materia {
   id                 String                    @id @default(uuid()) @map("_id")
   name               String
   descricao          String
   cor                String
   slug               String                    @unique
-  topicos            Topico[]
   cursosRelacionados CursoMateriaRelacionada[]
-}
-
-model Topico {
-  id        String   @id @default(uuid()) @map("_id")
-  name      String
-  descricao String
-  slug      String   @unique
-  archived  Boolean? @default(false)
-
-  materia      Materia        @relation(fields: [materiaId], references: [id])
-  materiaId    String
-  topicoLicoes TopicoLicao[]
-  cursoTopicos CursoTopico[]
 }
 
 model Licao {
@@ -115,19 +69,6 @@ model Licao {
   archived  Boolean? @default(false)
 
   conteudo     Conteudo[]
-  topicoLicoes TopicoLicao[]
-}
-
-model TopicoLicao {
-  id    String @id @default(uuid()) @map("_id")
-  order Int    @default(0)
-
-  topico   Topico @relation(fields: [topicoId], references: [id])
-  topicoId String
-  licao    Licao  @relation(fields: [licaoId], references: [id])
-  licaoId  String
-
-  @@unique([topicoId, licaoId])
 }
 
 model Conteudo {

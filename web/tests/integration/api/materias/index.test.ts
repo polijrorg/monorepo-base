@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest'
-import * as materiaService from '@/backend/services/materia'
+import * as materiaService from '@/backend/services/materias'
 import { GET, POST } from '@/backend/api/materias/route'
 import { getMateriasMock, postMateriaMock } from '../../mocks/materia'
 import { setCurrentRole } from '../../mocks/auth'
 import { createRequest } from '../../mocks/requests'
 
-vi.mock('@/backend/services/materia', () => ({
+vi.mock('@/backend/services/materias', () => ({
   getAllMaterias: vi.fn(),
   createMateria: vi.fn(),
 }))

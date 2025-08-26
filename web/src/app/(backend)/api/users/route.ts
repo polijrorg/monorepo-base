@@ -2,8 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { registerSchema } from "@/backend/schemas";
 import { returnInvalidDataErrors, validBody, zodErrorHandler } from "@/utils/api";
-import { findUserByEmail } from "../../services/user";
+import { findUserByEmail } from "../../services/users";
 import { authClient } from "@/lib/auth-client";
+import { AllowedRoutes } from "@/types";
+
+const allowedRoles: AllowedRoutes = {
+  GET: ["SUPER_ADMIN", "ADMIN"]
+}
+
+// rota de get all users
+export async function GET() {
+  
+}
 
 export async function POST(request: NextRequest) {
   try {

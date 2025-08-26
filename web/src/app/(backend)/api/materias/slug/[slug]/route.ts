@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getMateriaBySlug } from '@/backend/services/materia'
+import { getMateriaBySlug } from '@/app/(backend)/services/materias'
 import { slugSchema } from '@/backend/schemas'
 import { zodErrorHandler } from '@/utils'
 

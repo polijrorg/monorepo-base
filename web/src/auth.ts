@@ -14,6 +14,21 @@ export const auth = betterAuth({
     emailAndPassword: {  
         enabled: true
     },
+    user: {
+        deleteUser: { 
+            enabled: true
+        },
+        changeEmail: {
+            enabled: true,
+            // sendChangeEmailVerification: async ({ user, newEmail, url, token }, request) => {
+            //     await sendEmail({
+            //         to: user.email, // verification email must be sent to the current user email to approve the change
+            //         subject: 'Approve email change',
+            //         text: `Click the link to approve the change: ${url}`
+            //     })
+            // }
+        }
+    },
     // socialProviders: { 
     //     google: { 
     //        clientId: process.env.GOOGLE_ID as string, 

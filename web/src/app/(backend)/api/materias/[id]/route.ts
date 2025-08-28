@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getMateriaById } from '@/backend/services/materia'
+import { getMateriaById } from '@/app/(backend)/services/materias'
 import { idSchema } from '@/backend/schemas';
 import { zodErrorHandler } from '@/utils';
 

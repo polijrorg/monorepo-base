@@ -1,16 +1,15 @@
 import { describe, it, vi, beforeEach, expect, Mock } from "vitest";
-import * as userService from '@/backend/services/user'
-import * as authService from '@/backend/services/auth'
+import * as userService from '@/backend/services/users'
 import { postUserMock } from "../../mocks/user";
 import { createRequest } from "../../mocks/requests";
 
-vi.mock('@/backend/services/user', () => ({
+vi.mock('@/backend/services/users', () => ({
   findUserByEmail: vi.fn(),
 }))
 
-import { POST } from '@/backend/api/user/route'
+import { POST } from '@/backend/api/users/route'
 
-describe('POST /api/user', () => {
+describe('POST /api/users', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

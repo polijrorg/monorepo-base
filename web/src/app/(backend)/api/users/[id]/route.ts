@@ -4,7 +4,6 @@ import { blockForbiddenRequests, getUserFromRequest, returnInvalidDataErrors, va
 import { AllowedRoutes } from "@/types";
 import { idSchema, patchSchema } from "@/backend/schemas";
 import { deleteUser, findUserById, updateUser } from "@/backend/services/users";
-import { auth } from "@/auth";
 
 const allowedRoles: AllowedRoutes = {
   PATCH: ['SUPER_ADMIN', 'ADMIN', 'USER'],

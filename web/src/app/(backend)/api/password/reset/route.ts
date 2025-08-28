@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     });
     
     return NextResponse.json(res);
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: "Reset failed" }, { status: 400 });
   }
 }

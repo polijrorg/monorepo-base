@@ -6,13 +6,27 @@ import prisma from "./app/(backend)/services/db";
 import { customSession } from "better-auth/plugins";
 import { getUserRole } from "@/backend/services/auth";
 import { expo } from "@better-auth/expo";
+import { sendEmail } from "./lib/email";
+import { ResetPasswordEmail } from "./templates/ResetPasswordEmail";
  
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "mongodb",
     }),
     emailAndPassword: {  
-        enabled: true
+      enabled: true,
+      sendResetPassword: async ({ user, url /*, token*/ }, req) => {
+        // url already includes the reset token; just email it.
+        await sendEmail({
+          to: user.email,
+          subject: "Reset your password",
+          react: ResetPasswordEmail({ name: user.name, resetUrl: url }),
+        });
+      },
+      // optional: runs after a successful reset
+      onPasswordReset: async ({ user }) => {
+        console.log("Password reset for:", user.email);
+      },
     },
     user: {
         deleteUser: { 

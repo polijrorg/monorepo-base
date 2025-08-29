@@ -1,0 +1,11 @@
+meta {
+  name: delete
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseUrl}}/{{folder}}/{{materiaId}}
+  body: none
+  auth: inherit
+}

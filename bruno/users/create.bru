@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/user
+  url: {{baseUrl}}/{{folder}}
   body: json
   auth: inherit
 }
@@ -16,5 +16,13 @@ body:json {
     "email": "{{$randomEmail}}",
     "password": "Teste123",
     "confirmPassword": "Teste123"
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.id) {
+    bru.setVar("userId", res.body.id);
+  } else {
+    console.log("No ID found in response");
   }
 }

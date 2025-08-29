@@ -42,6 +42,23 @@ Expo (React Native), @better-auth/expo, NativeWind (mesma brisa do tailwind)
 Vitest (integração), Playwright (e2e)
 
 ## Specs e Padrões de Projeto
-...
+Existem especificações ou diretrizes que regem os nosso projetos aqui e são determinadas pelas tecnologias que usamos e os padrões de mercado impostos. É **extremamente importante mantermos esses padrões**, principalmente se você for analista ou mais novo aqui no núcleo, mas também pra evitar redundâncias e código duplicado. É possível entender por meio do template base esses padrões, porém também criamos arquivos markdown para facilitar isso, podendo ser encontrados nas pastas **/web/docs** ou **/mobile/docs**, sobre better-auth e specs de api por exemplo.
+
+Exemplos de especificações:
+- uso de ícones do lucide-react e fontes do next/font
+- uso de alertas com toast.success/toast.error
+- uso de funções utilitárias como blockForbiddenRequests, toErrorMessage, getUserFromRequest
+- params sendo do tipo Promise
+E outras boas práticas de clean code no geral
 
 ## Atualizando o monorepo
+Se você é liderança técnica, coord ou só busca ajudar a atualizar o monorepo, parabéns!!! Existem alguns passos que devem ser seguidos e alguns pensamentos de arquitetura que devemos ter em mente antes de damros merge nesse repo ou de fazer seu PR **(sim, não é pra commitar na main!!!!!!)**. Considerações e dicas:
+- Essa nova lib vai mudar os padrões de código atual? Como podemos contornar isso (docs, workshop, etc.)?
+- Isso vai facilitar ou atrapalhar quem for começar um projeto novo? Qual o tamanho desse impacto?
+- O quão flexível é essa lib/solução?
+- O quão escalável é essa lib/solução?
+- Essa novidade é fácil de entender?
+- Por quanto tempo essa lib será mantida? Ela tem um time de suporte ativo?
+- Quanto código duplicado isso gera?
+#### Sobre PRs
+Lembre-se de fazer bons nomes e descrições no PR, além de bons commits. Sinta-se à vontade pra juntar essas mudanças de um mesmo tema, fazer seus commits e mandar um PR?

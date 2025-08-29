@@ -36,7 +36,7 @@
     "resend": "^6.0.1",
     "tailwind-merge": "^3.3.0",
     "vaul": "^1.1.2",
-    "zod": "^3.25.45"
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

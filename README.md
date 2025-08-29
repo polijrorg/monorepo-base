@@ -29,10 +29,17 @@ pnpm install
 #### Início de projeto
 O monorepo já vem com alguns modelos, telas, libs e componentes instalados por padrão. A primeira coisa a fazer é excluir ou modificar essa base pra atender às necessidades do seu projeto. Por exemplo, temos o Resend para enviar emails e ele está sendo usado *por padrão* para rota de 'forgot password'. Então é necessário configurar o resend ou apagar essa rota e seus derivados.
 
-Antes de rodar, também é necessário criar o arquivo *.env* com as variáveis relacionadas ao seu projeto, como o URL do Mongodb Atlas e alguns outros encontrados no .env.example (arquivo que não deve ser modificado pois é realmente só de exemplo.
+Antes de rodar, também é necessário criar o arquivo *.env* com as variáveis relacionadas ao seu projeto, como o URL do Mongodb Atlas e alguns outros encontrados no .env.example (arquivo que não deve ser modificado pois é realmente só de exemplo).
 
 ## Tecnologias Usadas
-...
+#### Web
+Geral: Next.js
+- Back: Prisma (ORM para lidar com o banco de dados), Zod (validação de tipos/api), MongoDB (db no-sql)
+- Front: Tailwindcss, shadcn/ui (lib de componentes), lucide-react (lib de icons), react-hot-toast (alertas personalizados)
+#### Mobile
+Expo (React Native), @better-auth/expo, NativeWind (mesma brisa do tailwind) 
+#### Tests
+Vitest (integração), Playwright (e2e)
 
 ## Specs e Padrões de Projeto
 ...

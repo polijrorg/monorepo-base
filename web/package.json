@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "lint": "next lint --fix",
-    "lint:check": "next lint",
+    "lint": "eslint --fix .",
+    "lint:check": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:complete": "vitest run && playwright test",

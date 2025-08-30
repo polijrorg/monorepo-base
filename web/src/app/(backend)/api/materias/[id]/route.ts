@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getMateriaById } from '@/app/(backend)/services/materias'
 import { idSchema } from '@/backend/schemas';
 import { zodErrorHandler } from '@/utils';
+import { toErrorMessage } from '@/utils/api/toErrorMessage';
 
 export async function GET(
   request: Request,
@@ -14,7 +15,7 @@ export async function GET(
     
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'ID inválido', details: validationResult.error.errors },
+        toErrorMessage('ID inválido'),
         { status: 400 }
       )
     }
@@ -23,7 +24,7 @@ export async function GET(
 
     if (!materia) {
       return NextResponse.json(
-        { error: 'Matéria não encontrada' },
+        toErrorMessage('Matéria não encontrada'),
         { status: 404 }
       )
     }

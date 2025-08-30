@@ -4,6 +4,7 @@ import { blockForbiddenRequests, returnInvalidDataErrors, validBody, zodErrorHan
 import { AllowedRoutes } from "@/types";
 import { emailSchema, idSchema } from "@/backend/schemas";
 import { auth } from "@/auth";
+import { toErrorMessage } from "@/utils/api/toErrorMessage";
 
 const allowedRoles: AllowedRoutes = {
   PATCH: ['SUPER_ADMIN', 'ADMIN', 'USER'],
@@ -22,7 +23,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     if (!idValidationResult.success) {
       return NextResponse.json(
-        { error: 'ID inválido', details: idValidationResult.error.errors },
+        toErrorMessage('ID Inválido'),
         { status: 400 }
       )
     }
@@ -31,7 +32,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const validationResult = emailSchema.safeParse(newEmail);
 
     if (!validationResult.success) {
-      return returnInvalidDataErrors(validationResult);
+      return returnInvalidDataErrors(validationResult.error);
     }
     
     const user = await auth.api.changeEmail({ body: {

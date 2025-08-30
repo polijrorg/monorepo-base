@@ -4,6 +4,7 @@ import { blockForbiddenRequests, getUserFromRequest, returnInvalidDataErrors, va
 import { AllowedRoutes } from "@/types";
 import { idSchema, patchSchema } from "@/backend/schemas";
 import { deleteUser, findUserById, updateUser } from "@/backend/services/users";
+import { toErrorMessage } from "@/utils/api/toErrorMessage";
 
 const allowedRoles: AllowedRoutes = {
   PATCH: ['SUPER_ADMIN', 'ADMIN', 'USER'],
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'ID inválido', details: validationResult.error.errors },
+        toErrorMessage('ID Inválido'),
         { status: 400 }
       )
     }
@@ -54,7 +55,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'ID inválido', details: validationResult.error.errors },
+        toErrorMessage('ID Inválido'),
         { status: 400 }
       )
     }
@@ -95,7 +96,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     if (!idValidationResult.success) {
       return NextResponse.json(
-        { error: 'ID inválido', details: idValidationResult.error.errors },
+        toErrorMessage('ID Inválido'),
         { status: 400 }
       )
     }
@@ -109,7 +110,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const validationResult = patchSchema.safeParse(body);
 
     if (!validationResult.success) {
-      return returnInvalidDataErrors(validationResult);
+      return returnInvalidDataErrors(validationResult.error);
     }
     
     const user = await updateUser(id, validationResult.data);

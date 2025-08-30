@@ -20,7 +20,7 @@ const registerBaseObject = z.object({
 
 export const registerSchema = registerBaseObject
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Senhas não conferem",
+    error: "Senhas não conferem",
     path: ["confirmPassword"],
 })
 
@@ -31,7 +31,7 @@ export const patchSchema = registerBaseObject
   .partial() // manter a semântica de "patch" (todos opcionais)
   .strict() // ERRO se houver campos extras (ex: email enviado)
   .refine((obj) => Object.keys(obj).length > 0, {
-    message: "Pelo menos um campo precisa ser fornecido para atualização",
+    error: "Pelo menos um campo precisa ser fornecido para atualização",
   });
 
 export const updatePasswordSchema = z.object({

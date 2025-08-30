@@ -16,8 +16,9 @@ export const emailSchema = z
 
 export const nameSchema = z
     .string({
-      required_error: "Nome é obrigatório",
-      invalid_type_error: "Nome deve ser um texto"
+      error: (issue) => issue.input === undefined 
+    ? "Nome é obrigatório" 
+    : "Nome deve ser um texto" 
     })
     .min(1, "Nome não pode estar vazio")
     .max(100, "Nome não pode ter mais de 100 caracteres")
@@ -25,16 +26,18 @@ export const nameSchema = z
     
 export const corSchema = z
     .string({
-      required_error: "Cor é obrigatória",
-      invalid_type_error: "Cor deve ser um texto"
+      error: (issue) => issue.input === undefined 
+      ? "Cor é obrigatória" 
+      : "Cor deve ser um texto" 
     })
     .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Cor deve estar no formato hexadecimal válido (ex: #FF0000)")
     .trim()
 
 export const slugSchema = z
     .string({
-      required_error: "Slug é obrigatório",
-      invalid_type_error: "Slug deve ser um texto"
+      error: (issue) => issue.input === undefined 
+      ? "Slug é obrigatório" 
+      : "Slug deve ser um texto" 
     })
     .min(1, "Slug não pode estar vazio")
     .max(100, "Slug não pode ter mais de 100 caracteres")

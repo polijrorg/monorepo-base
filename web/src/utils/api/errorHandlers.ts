@@ -1,45 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ZodError } from "zod";
 import { NextResponse } from "next/server";
+import { toErrorMessage } from "./toErrorMessage";
 
-export function returnInvalidDataErrors(validationResult: { error: { errors: any[]; }; }) {
-  const errors = validationResult.error.errors.map(err => ({
+export function returnInvalidDataErrors(error: ZodError) {
+  const errors = error.issues.map(err => ({
     campo: err.path.join('.'),
-    mensagem: err.message
+    message: err.message
   }))
   
   return NextResponse.json(
-    { 
-      error: 'Dados inválidos',
-      detalhes: errors
-    },
+    toErrorMessage(errors[0].message, errors),
     { status: 400 }
   )
 }
 
 export function zodErrorHandler(error: any) {
   if (error instanceof ZodError) {
-    const fieldErrors = error.errors.reduce((acc, err) => {
-      const field = err.path[0];
-      if (!acc[field]) {
-        acc[field] = [];
-      }
-      acc[field].push(err.message);
-      return acc;
-    }, {} as Record<string, string[]>);
+    const errors = error.issues.map(err => ({
+      campo: err.path.join('.'),
+      message: err.message
+    }))
 
     return NextResponse.json(
-      { 
-        error: "Dados inválidos",
-        fieldErrors,
-        messages: error.errors.map(err => err.message)
-      },
+      toErrorMessage(errors[0].message, errors),
       { status: 400 }
     );
   }
     
   return NextResponse.json(
-    { error: "Erro interno do servidor" },
+    toErrorMessage('Erro Interno do Servidor'),
     { status: 500 }
   );
 }

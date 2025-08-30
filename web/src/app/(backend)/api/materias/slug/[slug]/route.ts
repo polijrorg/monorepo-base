@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getMateriaBySlug } from '@/app/(backend)/services/materias'
 import { slugSchema } from '@/backend/schemas'
-import { zodErrorHandler } from '@/utils'
+import { returnInvalidDataErrors, zodErrorHandler } from '@/utils'
+import { toErrorMessage } from '@/utils/api/toErrorMessage'
 
 export async function GET(
   request: Request,
@@ -12,21 +13,13 @@ export async function GET(
 
     const parseResult = slugSchema.safeParse(slug)
     if (!parseResult.success) {
-      const erros = parseResult.error.errors.map((err) => ({
-        campo: err.path.join('.'),
-        mensagem: err.message,
-      }))
-      return NextResponse.json(
-        { error: 'Slug inválido', detalhes: erros },
-        { status: 400 }
-      )
+      return returnInvalidDataErrors(parseResult.error)
     }
-
     const materia = await getMateriaBySlug(slug)
 
     if (!materia) {
       return NextResponse.json(
-        { error: 'Matéria não encontrada' },
+        toErrorMessage('Matéria não encontrada'),
         { status: 404 }
       )
     }

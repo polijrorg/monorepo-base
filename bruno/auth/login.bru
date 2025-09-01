@@ -17,3 +17,11 @@ body:json {
     "callbackURL": "/"
   }
 }
+
+script:post-response {
+  if (res.body && res.body.token) {
+    bru.setVar("sessionValue", res.body.token);
+  } else {
+    console.log("No ID found in response");
+  }
+}

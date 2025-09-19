@@ -1,5 +1,11 @@
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-CHANGED_FILES=$(git diff --name-only origin/"$BRANCH")
+
+# Verifica se o branch remoto existe. Se não existir, não usa origin/BRANCH no diff.
+if git show-ref --verify --quiet refs/remotes/origin/"$BRANCH"; then
+  CHANGED_FILES=$(git diff --name-only origin/"$BRANCH")
+else
+  CHANGED_FILES=$(git diff --name-only)
+fi
 
 # Check if any changed file is under the web/ folder
 if echo "$CHANGED_FILES" | grep -q "^web/"; then

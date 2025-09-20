@@ -52,7 +52,11 @@ Exemplos de especificações:
 E outras boas práticas de clean code no geral
 
 ## Atualizando o monorepo
-Se você é liderança técnica, coord ou só busca ajudar a atualizar o monorepo, parabéns!!! Existem alguns passos que devem ser seguidos e alguns pensamentos de arquitetura que devemos ter em mente antes de damros merge nesse repo ou de fazer seu PR **(sim, não é pra commitar na main!!!!!!)**. Considerações e dicas:
+Se você é liderança técnica, coord ou só busca ajudar a atualizar o monorepo, parabéns!!! Existem alguns passos que devem ser seguidos e alguns pensamentos de arquitetura que devemos ter em mente antes de damros merge nesse repo ou de fazer seu PR **(sim, não é pra commitar na main!!!!!!)**. 
+
+**ANTES DISSO PORÉM, É IMPORTANTE LEMBRAR: quando atualizamos o Next.js e consequentemente a versão do React (a não ser que seja um patch release, ou seja, 15.5.1 -> 15.5.3) é IMPORTANTE VERIFICAR SE O EXPO TAMBÉM ESTÁ ATUALIZANDO PRA MESMA VERSÃO DO REACT (ou alguma com mesma patch version, como react 19.1.x e 19.1.y). é possível haver erros em versões mais antigas do pnpm ou problemas com o pnpm-lock e os node_modules já instalados, então se for necessário deixar diferentes versões do react, dê uma boa testada tanto no expo quanto o next**
+
+Considerações e dicas:
 - Essa nova lib vai mudar os padrões de código atual? Como podemos contornar isso (docs, workshop, etc.)?
 - Isso vai facilitar ou atrapalhar quem for começar um projeto novo? Qual o tamanho desse impacto?
 - O quão flexível é essa lib/solução?

@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import { Rubik } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { ToastProvider } from "@/components/common/ToastProvider";
 
-const rubik = Rubik({
-  variable: "--font-rubik",
-  subsets: ["latin"],
-})
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Noctiluz",
-  description: "Plataforma para olimpíadas científicas e reforço escolar",
+  title: "Loja Secreta - Dota 2",
+  description: "Loja de itens secretos do Dota 2",
 };
 
 export default function RootLayout({
@@ -20,13 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body
-        className={`${rubik.variable} antialiased`}
-      >
-        {children}
-
-        <ToastProvider />
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

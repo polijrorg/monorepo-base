@@ -6,7 +6,7 @@ import RequiredTag from "../input/RequiredTag";
 import dynamic from 'next/dynamic';
 
 const CredentialsButton = dynamic(() => import('@/components/auth/CredentialsButton'));
-const ValidatedInput = dynamic(() => import('@/components/input/ValidatedInput'));
+const ValidatedInput = dynamic(() => import('@/components/base/input/ValidatedInput'));
 
 interface CredentialsLoginFormProps {
   setEmail: (email: string) => void;

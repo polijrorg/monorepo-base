@@ -1,4 +1,4 @@
-import LandingPagesNav from "@/components/nav/InitialNav";
+import LandingPagesNav from "@/components/base/nav/InitialNav";
 import Image from "next/image";
 import Link from "next/link";
 

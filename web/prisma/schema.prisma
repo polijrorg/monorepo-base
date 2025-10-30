@@ -67,20 +67,6 @@ model Licao {
   name      String
   descricao String
   archived  Boolean? @default(false)
-
-  conteudo     Conteudo[]
-}
-
-model Conteudo {
-  id       String   @id @default(uuid()) @map("_id")
-  name     String
-  type     String
-  markdown String
-  order    Int      @default(0)
-  archived Boolean? @default(false)
-
-  licao   Licao?  @relation(fields: [licaoId], references: [id])
-  licaoId String?
 }
 
 // evitar mexer daqui pra baixo:

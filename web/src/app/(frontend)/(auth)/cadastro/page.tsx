@@ -1,5 +1,5 @@
-import NavbarLogo from "@/components/nav/NavbarLogo";
-import CadastroForm from "./CadastroForm";
+import NavbarLogo from "@/components/base/nav/NavbarLogo";
+import CadastroForm from "./_components/CadastroForm";
 
 function Cadastro() {
   return ( 

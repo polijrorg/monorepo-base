@@ -11,9 +11,6 @@ function LandingPagesNav({ isLogged }: { isLogged: boolean }) {
       </div>
 
       <ul className="flex items-center gap-4 text-xl">
-        <li>
-          <Link href="/escolas" className="font-medium" >Escolas</Link>
-        </li>
         {isLogged ? (
           <li className="ml-8">
             <Link href='/aprender' className="button-md border-pink-200 text-pink-50 bg-pink-500 flex items-center gap-2">

@@ -1,8 +1,8 @@
-import LandingPagesNav from "@/components/nav/InitialNav";
-import Embarcar from "./Embarcar";
+import LandingPagesNav from "@/components/base/nav/InitialNav";
+import Embarcar from "./_components/Embarcar";
 import { headers } from "next/headers";
 import { auth } from "@/auth";
-import CarouselExample from "./CarouselExample";
+import CarouselExample from "./_components/CarouselExample";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -15,24 +15,16 @@ export default async function Home() {
     <div className="min-h-screen">
       <LandingPagesNav isLogged={isLogged} />
       
-      <main className="h-[70vh] w-full pt-20 pb-16
-      flex items-center justify-center gap-24 xl:gap-30">
-        <div className="w-[40%] h-full rounded-2xl bg-gray-700 ">
-
-        </div>
-
-        <div className="flex flex-col gap-6">
-          <h1 className="font-bold text-5xl">Aprenda do seu jeito</h1>
-          <p className="text-xl font-medium [&>span]:text-pink-500 [&>span]:font-bold">
-            Escolha o que <span>te interessa</span> e customize para o seu modo<br/>
-            preferido de aprender, com <span>vídeos</span>, <span>textos</span>, <span>podcasts</span>,<br/>
-            <span>exercícios</span>, <span>simulações</span> e <span>muita interatividade!</span>
-          </p>
-        </div>
+      <main className="h-[70vh] w-full pt-20 pb-16 flex flex-col items-center justify-center text-center">
+        <h1 className="font-bold text-5xl text-pink-800">Página de Exemplo</h1>
+        <p className="pt-4 text-xl">Comece a editar seu site em <em className="text-pink-400">/app/(frontend)/(landing-pages)/page.tsx</em></p>
       </main>
 
-      <Embarcar isLogged={isLogged} />
+      <div className="w-full flex items-center justify-center">
+        <Embarcar isLogged={isLogged} />
+      </div>
 
+      <p className="text-center pt-8">um carousel de exemplo :)</p>
       <CarouselExample />
     </div>
   );

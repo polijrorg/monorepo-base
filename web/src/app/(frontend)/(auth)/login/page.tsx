@@ -1,5 +1,5 @@
 import Noctiluz from '@/components/svgs/noctiluz.svg'
-import LoginForm from './LoginForm';
+import LoginForm from './_components/LoginForm';
 
 function LoginPage() {
   return ( 

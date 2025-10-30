@@ -1,5 +1,5 @@
 import Link from "next/link";
-import BaseCheckbox from "../input/BaseCheckbox/BaseCheckbox";
+import BaseCheckbox from "../base/input/BaseCheckbox/BaseCheckbox";
 
 function LoginOptionals() {
   return ( 

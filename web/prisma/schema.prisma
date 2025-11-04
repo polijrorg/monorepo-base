@@ -14,26 +14,9 @@ enum Role {
   SUPER_ADMIN
 }
 
-model User {
-  // nao mexer >
-  id            String    @id @default(uuid()) @map("_id")
-  name          String
-  email         String    @unique
-  emailVerified Boolean?
-  image         String?
-  role          Role      @default(USER)
-  // < nao mexer 
-
-  createdAt  DateTime
-  updatedAt  DateTime
-  sessions   Session[]
-  accounts   Account[]
-
-  @@map("user")
-}
-
+// modelos de exemplo abaixo (pode deletar)
 model Curso {
-  id        String @id @default(uuid()) @map("_id")
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   descricao String
   slug      String @unique
@@ -42,7 +25,7 @@ model Curso {
 }
 
 model CursoMateriaRelacionada {
-  id String @id @default(uuid()) @map("_id")
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
 
   curso   Curso  @relation(fields: [cursoId], references: [id])
   cursoId String
@@ -63,13 +46,38 @@ model Materia {
 }
 
 model Licao {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId // id base do mongodb, + perfomance
   name      String
   descricao String
   archived  Boolean? @default(false)
 }
+// modelos de exemplo acima (pode deletar)
 
-// evitar mexer daqui pra baixo:
+model User {
+  // nao mexer entre aqui >
+  id            String    @id @map("_id") // o id do user deve ser assim por causa do better auth
+  name          String
+  email         String    @unique
+  emailVerified Boolean?
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  role          Role      @default(USER)
+  // < e aqui
+
+
+
+  @@map("user")
+}
+
+
+
+
+
+// evitar mexer daqui pra baixo
+// nesses 3 modelos do better auth
 model Session {
   id        String   @id @map("_id")
   expiresAt DateTime

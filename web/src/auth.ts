@@ -10,6 +10,7 @@ import { expo } from "@better-auth/expo";
 import { ResetPasswordEmail } from "./templates/ResetPasswordEmail";
  
 export const auth = betterAuth({
+    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
     database: prismaAdapter(prisma, {
         provider: "mongodb",
     }),

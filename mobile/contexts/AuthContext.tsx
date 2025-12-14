@@ -1,4 +1,3 @@
-import '../global.css';
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter, useSegments } from 'expo-router'
 import { authClient } from '../lib/auth-client'

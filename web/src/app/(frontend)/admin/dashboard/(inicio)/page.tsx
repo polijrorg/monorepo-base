@@ -5,7 +5,7 @@ function DashboardPage() {
   const Paragraph = () => (
     <>
       Estatísticas, gráficos e afins<br />
-      relacionados a plataforma Noctiluz
+      relacionados a plataforma
     </>
   )
   return ( 

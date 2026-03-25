@@ -1,5 +1,4 @@
 import Link from "next/link";
-import NavbarLogo from "../NavbarLogo";
 import { UserRound } from "lucide-react";
 
 function LandingPagesNav({ isLogged }: { isLogged: boolean }) {
@@ -7,7 +6,7 @@ function LandingPagesNav({ isLogged }: { isLogged: boolean }) {
     <nav className="w-full py-6 px-8
     flex items-center justify-between">
       <div className="text-pink-500">
-        <NavbarLogo isH2 />
+        <h2 className="text-2xl font-bold">monorepo base</h2>
       </div>
 
       <ul className="flex items-center gap-4 text-xl">

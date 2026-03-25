@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
 
-import CredentialsLoginForm from '@/components/form/CredentialsLoginForm';
+import CredentialsLoginForm from '@/components/auth/CredentialsLoginForm';
 
 function AdminForm() {
   const [loading, setLoading] = useState(true);

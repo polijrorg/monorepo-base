@@ -4,13 +4,9 @@ import { useState, useEffect } from 'react';
 import CredentialsLoginForm from '@/components/auth/CredentialsLoginForm';
 
 function AdminForm() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
 
   return ( 
     <>

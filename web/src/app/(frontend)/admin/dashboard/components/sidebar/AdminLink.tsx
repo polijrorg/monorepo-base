@@ -4,15 +4,9 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function AdminLink({ item, pathname }: { item: any, pathname: string }) {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const selected = mounted ? pathname === item.url : false
+  const selected = pathname === item.url
 
   return ( 
     <SidebarMenuItem className={cn("pr-7", item.marginTop && 'mt-2', selected && "hover:text-pink-50")}>

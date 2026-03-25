@@ -8,6 +8,12 @@
     "prepare": "husky"
   },
   "pnpm": {
+    "overrides": {
+      "react": "19.2.0",
+      "react-dom": "19.2.0",
+      "@types/react": "19.2.14",
+      "@types/react-dom": "19.2.3"
+    },
     "onlyBuiltDependencies": [
         "@prisma/client"
     ]

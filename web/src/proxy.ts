@@ -44,7 +44,7 @@ function hasRequiredRole(userRole: Role | undefined, requiredRoles: Role[]): boo
   return requiredRoles.includes(userRole);
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   const session = await auth.api.getSession({
@@ -100,8 +100,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  runtime: "nodejs",
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
-  ],
+  ]
 };

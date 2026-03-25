@@ -3,4 +3,6 @@
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
   "editor.indentSize": 2,
+  "snyk.advanced.organization": "325baee9-e611-4465-8acb-0bbd1ff01cdc",
+  "snyk.advanced.autoSelectOrganization": true,
 }

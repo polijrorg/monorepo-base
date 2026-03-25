@@ -44,6 +44,7 @@ export const auth = betterAuth({
             // }
         }
     },
+    // Descomente abaixo para ativar o provedor social google e login com google funcionar
     // socialProviders: { 
     //     google: { 
     //        clientId: process.env.GOOGLE_ID as string, 

@@ -7,7 +7,7 @@ import { customSession } from "better-auth/plugins";
 import { getUserRole } from "@/backend/services/auth";
 import { expo } from "@better-auth/expo";
 // import { sendEmail } from "./lib/email";
-import { ResetPasswordEmail } from "./templates/ResetPasswordEmail";
+// import { ResetPasswordEmail } from "./lib/email/templates/ResetPasswordEmail";
  
 export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
@@ -44,6 +44,7 @@ export const auth = betterAuth({
             // }
         }
     },
+    // Descomente abaixo para ativar o provedor social google e login com google funcionar
     // socialProviders: { 
     //     google: { 
     //        clientId: process.env.GOOGLE_ID as string, 

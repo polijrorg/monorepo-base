@@ -60,7 +60,7 @@ function CadastroForm() {
       }
     } catch (error: unknown) {
       console.error('Signup error:', error);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       toast.error((error as any).message ?? "Erro inesperado");
     } finally {
       setLoading(false);

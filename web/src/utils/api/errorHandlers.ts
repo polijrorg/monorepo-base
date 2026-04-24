@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { ZodError } from "zod";
 import { NextResponse } from "next/server";
 import { toErrorMessage } from "./toErrorMessage";

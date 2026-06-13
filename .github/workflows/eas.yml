@@ -5,13 +5,11 @@ on:
     branches: [main]
     paths:
       - 'mobile/**'
-      - 'mobile/package.json'
 
   pull_request:
     branches: [main]
     paths:
       - 'mobile/**'
-      - 'mobile/package.json'
 
   workflow_dispatch:
     inputs:

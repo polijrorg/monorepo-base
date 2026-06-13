@@ -9,10 +9,10 @@ fi
 
 if echo "$CHANGED_FILES" | grep -q "^web/"; then
   echo "Detected changes in /web. Running typecheck..."
-  pnpm --filter web tsc --noEmit || exit 1
+  pnpm --filter web exec tsc --noEmit || exit 1
 fi
 
 if echo "$CHANGED_FILES" | grep -q "^mobile/"; then
   echo "Detected changes in /mobile. Running typecheck..."
-  pnpm --filter mobile tsc --noEmit || exit 1
+  pnpm --filter mobile exec tsc --noEmit || exit 1
 fi

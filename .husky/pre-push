@@ -13,6 +13,6 @@ if echo "$CHANGED_FILES" | grep -q "^web/"; then
 fi
 
 if echo "$CHANGED_FILES" | grep -q "^mobile/"; then
-  echo "Detected changes in /mobile. Running lint..."
-  pnpm --filter mobile lint || exit 1
+  echo "Detected changes in /mobile. Running typecheck..."
+  pnpm --filter mobile tsc --noEmit || exit 1
 fi

@@ -5,13 +5,13 @@ on:
     branches: [main]
     paths:
       - 'mobile/**'
-      - 'pnpm-lock.yaml'
+      - 'mobile/package.json'
 
   pull_request:
     branches: [main]
     paths:
       - 'mobile/**'
-      - 'pnpm-lock.yaml'
+      - 'mobile/package.json'
 
   workflow_dispatch:
     inputs:
@@ -151,7 +151,8 @@ jobs:
         if: |
           github.event_name == 'push' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.platform == 'all')
-        run: eas update --branch preview --message "Deploy from ${{ github.sha }}" || echo "Preview branch not configured, skipping"
+        continue-on-error: true
+        run: eas update --branch preview --message "Deploy from ${{ github.sha }}"
 
       # Submit requires explicit opt-in via workflow_dispatch and the correct platform selection
       - name: Submit iOS to App Store

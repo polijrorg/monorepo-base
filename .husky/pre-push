@@ -1,7 +1,7 @@
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 if git show-ref --verify --quiet refs/remotes/origin/"$BRANCH"; then
-  CHANGED_FILES=$(git diff --name-only origin/"$BRANCH")
+  CHANGED_FILES=$(git diff --name-only origin/"$BRANCH"...HEAD)
 else
   BASE=$(git merge-base HEAD origin/main 2>/dev/null || git rev-list --max-parents=0 HEAD)
   CHANGED_FILES=$(git diff --name-only "$BASE" HEAD)

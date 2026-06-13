@@ -68,7 +68,9 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'pnpm start',
+    // CI: app is already built by the "Build app" step → use next start (production server)
+    // Local: no build required → use next dev (Turbopack dev server)
+    command: process.env.CI ? 'pnpm start' : 'pnpm dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
   },

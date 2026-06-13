@@ -102,7 +102,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm --filter web exec playwright install --with-deps chromium
+        run: pnpm --filter web exec playwright install --with-deps
 
       - name: Build app
         run: pnpm --filter web build
@@ -114,8 +114,6 @@ jobs:
 
       - name: Run E2E tests
         run: pnpm --filter web test:e2e
-        env:
-          NEXT_PUBLIC_APP_URL: http://localhost:3000
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4

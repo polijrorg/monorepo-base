@@ -3,7 +3,8 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if git show-ref --verify --quiet refs/remotes/origin/"$BRANCH"; then
   CHANGED_FILES=$(git diff --name-only origin/"$BRANCH")
 else
-  CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || git diff --name-only)
+  BASE=$(git merge-base HEAD origin/main 2>/dev/null || git rev-list --max-parents=0 HEAD)
+  CHANGED_FILES=$(git diff --name-only "$BASE" HEAD)
 fi
 
 if echo "$CHANGED_FILES" | grep -q "^web/"; then

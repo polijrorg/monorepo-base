@@ -137,20 +137,34 @@ jobs:
            (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all'))
         run: eas build --platform android --profile production --non-interactive --wait
 
-      - name: Deploy OTA Update
-        working-directory: mobile
-        run: eas update --branch production --message "Deploy from ${{ github.sha }}"
-
-      - name: Submit iOS to App Store
+      # OTA only runs when all requested platforms were built (push = all; dispatch only when platform == all)
+      - name: Deploy OTA Update (production)
         working-directory: mobile
         if: |
           github.event_name == 'push' ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.submit == 'true')
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.platform == 'all')
+        run: eas update --branch production --message "Deploy from ${{ github.sha }}"
+
+      - name: Deploy OTA Update (preview)
+        working-directory: mobile
+        if: |
+          github.event_name == 'push' ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.platform == 'all')
+        run: eas update --branch preview --message "Deploy from ${{ github.sha }}" || echo "Preview branch not configured, skipping"
+
+      # Submit requires explicit opt-in via workflow_dispatch and the correct platform selection
+      - name: Submit iOS to App Store
+        working-directory: mobile
+        if: |
+          github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.submit == 'true' &&
+          (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all')
         run: eas submit --platform ios --latest --non-interactive
 
       - name: Submit Android to Play Store
         working-directory: mobile
         if: |
-          github.event_name == 'push' ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.submit == 'true')
+          github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.submit == 'true' &&
+          (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all')
         run: eas submit --platform android --latest --non-interactive

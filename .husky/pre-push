@@ -1,24 +1,17 @@
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-# Verifica se o branch remoto existe. Se não existir, não usa origin/BRANCH no diff.
 if git show-ref --verify --quiet refs/remotes/origin/"$BRANCH"; then
   CHANGED_FILES=$(git diff --name-only origin/"$BRANCH")
 else
-  CHANGED_FILES=$(git diff --name-only)
+  CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || git diff --name-only)
 fi
 
-# Check if any changed file is under the web/ folder
 if echo "$CHANGED_FILES" | grep -q "^web/"; then
-  echo "Detected changes in /web. Running lint..."
-  pnpm --filter web lint || exit 1
+  echo "Detected changes in /web. Running typecheck..."
+  pnpm --filter web tsc --noEmit || exit 1
+fi
 
-  if [ "$BRANCH" = "main" ]; then
-    echo "You're on branch 'main'. Running web build and tests..."
-    pnpm --filter web test:e2e || exit 1
-    pnpm --filter web build || exit 1
-  else
-    echo "Not on 'main' branch. Skipping web build/tests."
-  fi
-else
-  echo "No changes in /web. Skipping lint and build steps."
+if echo "$CHANGED_FILES" | grep -q "^mobile/"; then
+  echo "Detected changes in /mobile. Running lint..."
+  pnpm --filter mobile lint || exit 1
 fi

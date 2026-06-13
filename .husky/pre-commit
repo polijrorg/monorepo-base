@@ -1,11 +1,11 @@
-# Get list of staged files
 CHANGED_FILES=$(git diff --cached --name-only)
 
-# Check if any staged file is under the web/ folder
 if echo "$CHANGED_FILES" | grep -q "^web/"; then
-  echo "Detected changes in /web. Running tests..."
-  pnpm --filter web test
-else
-  echo "No changes in /web. Skipping web lint/test."
+  echo "Detected changes in /web. Running lint..."
+  pnpm --filter web lint:check || exit 1
 fi
 
+if echo "$CHANGED_FILES" | grep -q "^mobile/"; then
+  echo "Detected changes in /mobile. Running lint..."
+  pnpm --filter mobile lint || exit 1
+fi

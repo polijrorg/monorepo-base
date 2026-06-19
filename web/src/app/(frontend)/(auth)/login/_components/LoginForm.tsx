@@ -6,7 +6,7 @@ import LoginOptionals from "@/components/auth/LoginOptionals";
 
 import RequiredTag from "@/components/base/input/RequiredTag";
 import { authClient } from "@/lib/auth-client";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 import dynamic from 'next/dynamic';
 

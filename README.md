@@ -51,7 +51,7 @@ O monorepo já vem com modelos, telas e componentes base. A primeira coisa a faz
 #### Web
 - **Framework:** Next.js 16 (App Router)
 - **Back:** Prisma ORM, MongoDB, Better Auth, Zod
-- **Front:** Tailwind CSS 4, shadcn/ui, lucide-react, react-hot-toast, SWR
+- **Front:** Tailwind CSS 4, shadcn/ui, lucide-react, Sonner, SWR
 
 #### Mobile
 - Expo 55, React Native, Expo Router, NativeWind, Better Auth client
@@ -119,7 +119,7 @@ Existem especificações que regem os nossos projetos e é **extremamente import
 
 Exemplos de especificações:
 - Ícones do `lucide-react` e fontes do `next/font`
-- Alertas com `toast.success` / `toast.error` (react-hot-toast)
+- Alertas com `toast.success` / `toast.error` (Sonner)
 - Funções utilitárias: `blockForbiddenRequests`, `toErrorMessage`, `getUserFromRequest`, `returnInvalidDataErrors`
 - Rotas sempre no plural: `/api/users`, `/api/lessons`
 - Componentes < 200 linhas; SOLID principles

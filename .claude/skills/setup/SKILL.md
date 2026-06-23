@@ -54,7 +54,7 @@ Skills automáticas  (Claude ativa sozinho pelo contexto)
 
 ## Step 1 — Gather project information
 
-Ask the user (single AskUserQuestion call, multiple questions):
+Ask the user in Brazilian Portuguese (PTBR) (single AskUserQuestion call, multiple questions):
 
 1. **Project name** — used in package.json, CLAUDE.md header, app.json
 2. **Short description** — one sentence describing what the app does
@@ -80,6 +80,8 @@ Ask the user (single AskUserQuestion call, multiple questions):
    - Add only selected optional integrations with comments explaining each
 
 4. **Update `web/src/auth.ts`** — uncomment Google OAuth plugin block only if Google OAuth was selected.
+
+5. **Update** — change every noctiluz name or mention and insert the new project name 
 
 ### If "web only":
 

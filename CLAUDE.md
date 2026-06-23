@@ -115,7 +115,7 @@ Import order:
 UI conventions:
 - Icons: `lucide-react`
 - Fonts: `next/font`
-- Alerts: `toast.success` / `toast.error` (react-hot-toast)
+- Alerts: `toast.success` / `toast.error` (Sonner)
 - shadcn/ui for component primitives
 
 ### TypeScript Path Aliases

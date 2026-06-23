@@ -6,7 +6,7 @@ import PasswordRequirement from "./PasswordRequirement";
 import RequiredTag from "@/components/base/input/RequiredTag";
 import { hasLowercase, hasMinLength, hasNumber, hasUppercase, validatePassword, validateConfirmPassword } from "@/utils";
 
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { redirect } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 

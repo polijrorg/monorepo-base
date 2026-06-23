@@ -26,9 +26,6 @@ importers:
       '@expo/metro-runtime':
         specifier: ~56.0.15
         version: 56.0.15(@expo/log-box@56.0.13)(expo@56.0.12)(react-dom@19.2.0(react@19.2.0))(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
-      '@expo/vector-icons':
-        specifier: ^15.0.2
-        version: 15.0.3(expo-font@56.0.7)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       '@react-navigation/native':
         specifier: ^7.0.3
         version: 7.1.25(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -1500,13 +1497,6 @@ packages:
         optional: true
       react-native-worklets:
         optional: true
-
-  '@expo/vector-icons@15.0.3':
-    resolution: {integrity: sha512-SBUyYKphmlfUBqxSfDdJ3jAdEVSALS2VUPOUyqn48oZmb2TL/O7t7/PQm5v4NQujYEPLPMTLn9KVw6H7twwbTA==}
-    peerDependencies:
-      expo-font: '>=14.0.4'
-      react: 19.2.0
-      react-native: '*'
 
   '@expo/ws-tunnel@2.0.0':
     resolution: {integrity: sha512-j+JfTRdCk820J9dU0sA2SqshQIKFOMo7ED84w9MJFcebfbNQgsLztEY/SABDkGnjatrW4xGqnUhVRxSBVyCkXw==}
@@ -8604,12 +8594,6 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
-
-  '@expo/vector-icons@15.0.3(expo-font@56.0.7)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)':
-    dependencies:
-      expo-font: 56.0.7(expo@56.0.12)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
-      react: 19.2.0
-      react-native: 0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.0)
 
   '@expo/ws-tunnel@2.0.0(ws@8.18.3)':
     dependencies:

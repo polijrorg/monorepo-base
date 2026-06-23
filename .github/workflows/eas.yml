@@ -5,12 +5,12 @@ on:
     branches: [main]
     paths:
       - 'mobile/**'
-      
+
   pull_request:
     branches: [main]
     paths:
       - 'mobile/**'
-  
+
   workflow_dispatch:
     inputs:
       platform:
@@ -32,83 +32,47 @@ env:
   EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
 jobs:
-  build:
-    name: Build and Submit
+  # Preview build for PRs — uses EAS preview profile, does not submit to stores
+  preview:
+    name: Preview Build (PR)
     runs-on: ubuntu-latest
-    
+    if: github.event_name == 'pull_request'
+
     steps:
-      - name: 🏗 Setup repo
+      - name: Setup repo
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: 🏗 Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20.x
           cache: pnpm
 
-      - name: 🏗 Setup EAS
+      - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
           expo-version: latest
-          eas-version: 16.13.3
+          eas-version: '16.13.3'
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
-        run: pnpm install
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      # - name: 🚨 Run tests (optional)
-      #   run: pnpm test --if-present
+      - name: Setup Android credentials
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/google-services.json
 
-      - name: 📋 Validate Expo config
+      - name: Validate Expo config
+        working-directory: mobile
         run: npx expo config --type public
 
-      # Production builds (Push to main or manual dispatch)
-      - name: 🚀 Build iOS (Production)
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch' && 
-           (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all'))
-        run: eas build --platform ios --profile production --non-interactive --wait
+      - name: Build preview (all platforms)
+        working-directory: mobile
+        run: eas build --platform all --profile preview --non-interactive --no-wait
 
-      - name: 🚀 Build Android (Production)
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch' && 
-           (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all'))
-        run: eas build --platform android --profile production --non-interactive --wait
-
-      # Deploy OTA Update
-      - name: 🚢 Deploy Update (Production)
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch')
-        run: eas update --branch production --message "Deploy from GitHub Actions"
-
-      - name: Setup credentials
-        run: |
-          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > google-services.json
-
-      # Submit to stores (only for production builds)
-      - name: 🍎 Submit iOS to App Store
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.submit == 'true')
-        run: eas submit --platform ios --latest --non-interactive
-
-      - name: 🤖 Submit Android to Play Store
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.submit == 'true')
-        run: eas submit --platform android --latest --non-interactive
-
-      # Notify about build completion
-      - name: 📱 Comment PR with build info
-        if: github.event_name == 'pull_request'
+      - name: Comment PR with EAS dashboard link
         uses: actions/github-script@v7
         with:
           script: |
@@ -116,45 +80,91 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `✅ Build completed for both platforms! 
-              
-              Preview builds are ready for testing.
-              Check the [Expo dashboard](https://expo.dev) for download links.`
+              body: `📱 **Preview build triggered on EAS.**\n\nCheck the [Expo dashboard](https://expo.dev/accounts/${{ secrets.EXPO_ACCOUNT_NAME }}/projects) for download links once the build completes.\n\n> Build profile: \`preview\` — not submitted to stores.`
             })
 
-  # Job separado para deploy de updates apenas
-  deploy-update:
-    name: Deploy Update Only
+  # Production build + OTA update + store submission on push to main
+  production:
+    name: Production Build & Deploy
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'push' && 
-      github.ref == 'refs/heads/production' &&
-      !contains(github.event.head_commit.message, '[build]')
-    
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
     steps:
-      - name: 🏗 Setup repo
+      - name: Setup repo
         uses: actions/checkout@v4
 
-      - name: 🏗 Setup Node
-        uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
         with:
           node-version: 20.x
           cache: pnpm
 
-      - name: 🏗 Setup EAS
+      - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
           expo-version: latest
-          eas-version: latest
+          eas-version: '16.13.3'
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
-        run: pnpm install
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: 🚢 Deploy Update to Production
-        run: |
-          eas update --branch production --message "Update from ${{ github.sha }}"
-          
-      - name: 🚢 Deploy Update to Preview (if exists)
-        run: |
-          eas update --branch preview --message "Update from ${{ github.sha }}" || echo "Preview branch not found, skipping"
+      # Credentials must be set up BEFORE the build steps
+      - name: Setup Android credentials
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/google-services.json
+
+      - name: Validate Expo config
+        working-directory: mobile
+        run: npx expo config --type public
+
+      - name: Build iOS (Production)
+        working-directory: mobile
+        if: |
+          github.event_name == 'push' ||
+          (github.event_name == 'workflow_dispatch' &&
+           (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all'))
+        run: eas build --platform ios --profile production --non-interactive --wait
+
+      - name: Build Android (Production)
+        working-directory: mobile
+        if: |
+          github.event_name == 'push' ||
+          (github.event_name == 'workflow_dispatch' &&
+           (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all'))
+        run: eas build --platform android --profile production --non-interactive --wait
+
+      # OTA only runs when all requested platforms were built (push = all; dispatch only when platform == all)
+      - name: Deploy OTA Update (production)
+        working-directory: mobile
+        if: |
+          github.event_name == 'push' ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.platform == 'all')
+        run: eas update --branch production --message "Deploy from ${{ github.sha }}"
+
+      - name: Deploy OTA Update (preview)
+        working-directory: mobile
+        if: |
+          github.event_name == 'push' ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.platform == 'all')
+        continue-on-error: true
+        run: eas update --branch preview --message "Deploy from ${{ github.sha }}"
+
+      # Submit requires explicit opt-in via workflow_dispatch and the correct platform selection
+      - name: Submit iOS to App Store
+        working-directory: mobile
+        if: |
+          github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.submit == 'true' &&
+          (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all')
+        run: eas submit --platform ios --latest --non-interactive
+
+      - name: Submit Android to Play Store
+        working-directory: mobile
+        if: |
+          github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.submit == 'true' &&
+          (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all')
+        run: eas submit --platform android --latest --non-interactive

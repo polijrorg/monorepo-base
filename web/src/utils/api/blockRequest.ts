@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import type { Role } from "@/generated/prisma";
+import { headers } from "next/headers";
 
 export async function blockForbiddenRequests(
   request: NextRequest,
   allowedRoles: Role[] | undefined
 ) {
-  const session = await auth.api.getSession(request);
+  const session = await auth.api.getSession({ ...request, headers: await headers() });
 
   if (!session?.user) {
     return NextResponse.json(

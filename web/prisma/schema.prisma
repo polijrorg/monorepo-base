@@ -14,45 +14,6 @@ enum Role {
   SUPER_ADMIN
 }
 
-// modelos de exemplo abaixo (pode deletar)
-model Curso {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  descricao String
-  slug      String @unique
-
-  materiasRelacionadas CursoMateriaRelacionada[]
-}
-
-model CursoMateriaRelacionada {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-
-  curso   Curso  @relation(fields: [cursoId], references: [id])
-  cursoId String
-
-  materia   Materia @relation(fields: [materiaId], references: [id])
-  materiaId String
-
-  @@unique([cursoId, materiaId])
-}
-
-model Materia {
-  id                 String                    @id @default(uuid()) @map("_id")
-  name               String
-  descricao          String
-  cor                String
-  slug               String                    @unique
-  cursosRelacionados CursoMateriaRelacionada[]
-}
-
-model Licao {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId // id base do mongodb, + perfomance
-  name      String
-  descricao String
-  archived  Boolean? @default(false)
-}
-// modelos de exemplo acima (pode deletar)
-
 model User {
   // nao mexer entre aqui >
   id            String    @id @map("_id") // o id do user deve ser assim por causa do better auth
@@ -72,6 +33,7 @@ model User {
   @@map("user")
 }
 
+// crie modelos novos!
 
 
 

@@ -126,14 +126,17 @@ Exemplos de especificações:
 - Nunca usar `@auth/prisma-adapter` — o repo usa `better-auth/adapters/prisma`
 
 ## Atualizando o monorepo
+Se você é liderança técnica, coord ou só busca ajudar a atualizar o monorepo, parabéns!!! Existem alguns passos que devem ser seguidos e alguns pensamentos de arquitetura que devemos ter em mente antes de damros merge nesse repo ou de fazer seu PR **(sim, não é pra commitar na main!!!!!!)**. 
 
-Se você é liderança técnica, coord ou busca ajudar a atualizar o monorepo, existem alguns pensamentos de arquitetura que devemos ter em mente antes de dar merge **(não commite na main diretamente!)**.
+**ANTES DISSO PORÉM, É IMPORTANTE LEMBRAR: quando atualizamos o Next.js e consequentemente a versão do React (a não ser que seja um patch release, ou seja, 15.5.1 -> 15.5.3) é IMPORTANTE VERIFICAR SE O EXPO TAMBÉM ESTÁ ATUALIZANDO PRA MESMA VERSÃO DO REACT (ou alguma com mesma patch version, como react 19.1.x e 19.1.y). é possível haver erros em versões mais antigas do pnpm ou problemas com o pnpm-lock e os node_modules já instalados, então se for necessário deixar diferentes versões do react, dê uma boa testada tanto no expo quanto o next**
 
-Considerações:
-- Essa nova lib vai mudar os padrões de código atual? Como contornar isso (docs, workshop)?
-- Isso facilita ou atrapalha quem começar um projeto novo?
-- O quão flexível e escalável é essa solução?
-- Por quanto tempo essa lib será mantida? Tem suporte ativo?
+Considerações e dicas:
+- Essa nova lib vai mudar os padrões de código atual? Como podemos contornar isso (docs, workshop, etc.)?
+- Isso vai facilitar ou atrapalhar quem for começar um projeto novo? Qual o tamanho desse impacto?
+- O quão flexível é essa lib/solução?
+- O quão escalável é essa lib/solução?
+- Essa novidade é fácil de entender?
+- Por quanto tempo essa lib será mantida? Ela tem um time de suporte ativo?
 - Quanto código duplicado isso gera?
 
 Lembre-se de fazer bons nomes e descrições no PR, além de bons commits.

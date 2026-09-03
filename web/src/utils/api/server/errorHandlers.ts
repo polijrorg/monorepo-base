@@ -1,7 +1,6 @@
- 
 import { ZodError } from "zod";
 import { NextResponse } from "next/server";
-import { toErrorMessage } from "./toErrorMessage";
+import { toErrorMessage } from "../toErrorMessage";
 
 export function returnInvalidDataErrors(error: ZodError) {
   const errors = error.issues.map(err => ({

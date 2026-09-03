@@ -4,52 +4,126 @@
 1. [Introdução](#introdução)
 2. [Setup e Início de Projeto](#setup-e-início-de-projeto)
 3. [Tecnologias Usadas](#tecnologias-usadas)
-4. [Specs e Padrões de Projeto](#specs-e-padrões-de-projeto)
-5. [Atualizando o monorepo](#atualizando-o-monorepo)
+4. [Claude Code — Agents, Skills e Comandos](#claude-code--agents-skills-e-comandos)
+5. [Specs e Padrões de Projeto](#specs-e-padrões-de-projeto)
+6. [Atualizando o monorepo](#atualizando-o-monorepo)
 
 ## Introdução
 Esse é o repositório principal do NTec e engloba todo nosso escopo de dev/delivery. Nele temos algumas pastas que correspondem a uma funcionalidade no geral:
-- /.github -> relacionada ao readme, workflows e mais em relação ao Github e o Github Actions
-- /husky -> usado pra validações/scripts com o Git, por exemplo os lints antes de dar Push
-- /bruno -> é nosso documentador de APIs, usado pra mandar requests, documentar o back e facilitar a vida do front!
-- /mobile -> contém nosso front mobile que usa expo e nativewind atualmente
-- /web -> contém o next, prisma e nossas tecnologias de Front web e Back!
-- /.vscode -> configs do seu editor, sinta-se à vontade pra customizar
+- `/.github` — workflows de CI/CD (GitHub Actions para web e EAS para mobile)
+- `/.husky` — hooks de git: lint no commit, typecheck no push
+- `/.claude` — agents, skills e comandos do Claude Code (ver seção abaixo)
+- `/bruno` — documentador de APIs, usado pra mandar requests e facilitar a vida do front
+- `/mobile` — front mobile com Expo e NativeWind
+- `/web` — Next.js, Prisma e tecnologias de front web e back
+- `/.vscode` — configs do editor, sinta-se à vontade pra customizar
 
 ## Setup e Início de Projeto
-Para começar um projeto novo a ser executado, clique em usar template e marque o owner como polijr (se não for um projeto de treinamento).
-Após criado, clique em code > pegue o link do git > entre na pasta desejada no seu terminal e digite:
+
+Para começar um projeto novo, clique em **Use this template** e marque o owner como `polijr` (se não for treinamento).
+
 ```bash
 git clone <link>
-```
-Depois disso, entre na pasta criada e instale as dependências
-```bash
 pnpm install
 ```
-#### Início de projeto
-O monorepo já vem com alguns modelos, telas, libs e componentes instalados por padrão. A primeira coisa a fazer é excluir ou modificar essa base pra atender às necessidades do seu projeto. Por exemplo, temos o Resend para enviar emails e ele está sendo usado *por padrão* para rota de 'forgot password'. Então é necessário configurar o resend ou apagar essa rota e seus derivados.
 
-Antes de rodar, também é necessário criar o arquivo *.env* com as variáveis relacionadas ao seu projeto, como o URL do Mongodb Atlas e alguns outros encontrados no .env.example (arquivo que não deve ser modificado pois é realmente só de exemplo).
+#### Início com Claude Code (recomendado)
+
+Se estiver usando Claude Code, rode o comando de setup interativo:
+
+```
+/setup
+```
+
+Ele guia você pelo nome do projeto, escopo (web ou web + mobile), integrações opcionais e configura automaticamente o `CLAUDE.md`, `.env.example` e os workflows de CI/CD.
+
+#### Início manual
+
+1. Copie `web/.env.example` → `web/.env` e preencha as variáveis
+2. Se web + mobile: copie `mobile/.env.example` → `mobile/.env`
+3. Configure os GitHub Secrets necessários (ver `.env.example` para a lista)
+4. Rode `pnpm --filter web dev` para iniciar o servidor de desenvolvimento
+
+O monorepo já vem com modelos, telas e componentes base. A primeira coisa a fazer é excluir ou adaptar essa base para o projeto. Por exemplo: o Resend vem configurado para a rota de `forgot password` — configure-o ou remova a rota se não for usar email.
 
 ## Tecnologias Usadas
+
 #### Web
-Geral: Next.js
-- Back: Prisma (ORM para lidar com o banco de dados), Zod (validação de tipos/api), MongoDB (db no-sql)
-- Front: Tailwindcss, shadcn/ui (lib de componentes), lucide-react (lib de icons), react-hot-toast (alertas personalizados)
+- **Framework:** Next.js 16 (App Router)
+- **Back:** Prisma ORM, MongoDB, Better Auth, Zod
+- **Front:** Tailwind CSS 4, shadcn/ui, lucide-react, react-hot-toast, SWR
+
 #### Mobile
-Expo (React Native), @better-auth/expo, NativeWind (mesma brisa do tailwind) 
-#### Tests
-Vitest (integração), Playwright (e2e)
+- Expo 55, React Native, Expo Router, NativeWind, Better Auth client
+
+#### Testes
+- Vitest (integração), Playwright (e2e)
+
+#### CI/CD
+- GitHub Actions: lint, typecheck, testes de integração e e2e em PRs
+- EAS: preview build em PRs, production build + OTA no push para main
+
+---
+
+## Claude Code — Agents, Skills e Comandos
+
+Este template vem com agents e skills pré-configurados em `.claude/`. Abra o projeto com Claude Code e tudo estará disponível automaticamente.
+
+### Agents especializados
+
+Invocados com `/agent:nome` ou automaticamente quando Claude detecta o contexto.
+
+| Agent | Como invocar | Especialização |
+|---|---|---|
+| **frontend** | `/agent:frontend` | Next.js 16 App Router, Server/Client Components, shadcn/ui, SWR, import order, estrutura de `_components/` |
+| **backend** | `/agent:backend` | Padrão controller/service/schema, Better Auth, Prisma, Zod, utilitários (`blockForbiddenRequests`, `toErrorMessage`), testes de integração |
+| **security** | `/agent:security` | Auditoria de auth/authorization, OWASP Top 10 em contexto Next.js, validação de input, leakage de secrets, revisão de rotas |
+
+### Skills — Comandos de scaffolding
+
+| Comando | Argumento | O que faz |
+|---|---|---|
+| `/setup` | `[nome-do-projeto]` | Wizard de inicialização: define nome, descrição, escopo (web ou web + mobile) e integrações opcionais. Atualiza `CLAUDE.md`, `package.json`, `.env.example` e workflows de CI/CD |
+| `/new-route` | `<recurso> [--methods GET,POST] [--public]` | Scaffolda rota API completa: `route.ts` + `services/` + `schema.ts` + stub de teste de integração |
+| `/new-page` | `<nome> [--protected\|--public\|--auth\|--admin]` | Scaffolda página Next.js com `page.tsx`, `_components/index.ts` e `actions/` no route group correto |
+| `/new-screen` | `<nome> [--protected\|--public]` | Scaffolda tela Expo com NativeWind, Expo Router e auth guard via `useAuth()` |
+| `/check` | `[web\|mobile\|all]` | Roda `lint` + `tsc --noEmit` em web e/ou mobile e reporta erros antes do push |
+
+### Skills — Caveman (eficiência de tokens)
+
+Baseado em [juliusbrussee/caveman](https://github.com/juliusbrussee/caveman). Reduz o output do Claude em ~75% mantendo precisão técnica.
+
+| Comando | O que faz |
+|---|---|
+| `/caveman` | Ativa modo caveman: resposta comprimida, sem artigos e filler, técnicamente preciso. Desative com "stop caveman" ou "modo normal" |
+| `/caveman-commit` | Gera mensagem de commit no formato Conventional Commits, ≤72 chars, sem ruído |
+| `/caveman-compress` `<arquivo>` | Comprime arquivo de memória/notas (`.md`, `.txt`) em caveman-speak, cria backup `.original.md` |
+| `/caveman-review` | Review de diff ultra-comprimido: uma linha por finding no formato `arquivo:Llinha: problema. fix.` |
+| `/cavecrew` | Spawna subagents comprimidos especializados: `investigator` (localiza código), `builder` (edições cirúrgicas), `reviewer` (audit de diff) |
+
+### Skills — Model-invoked (ativam automaticamente)
+
+Estas skills não precisam ser chamadas explicitamente — Claude as ativa sozinho quando o contexto bate.
+
+| Skill | Ativa quando... |
+|---|---|
+| `backend-patterns` | Criando rotas, services ou schemas em `(backend)/` |
+| `frontend-patterns` | Criando páginas ou componentes em `(frontend)/` |
+| `security-patterns` | Tocando auth, variáveis de ambiente ou validação de input |
+
+---
 
 ## Specs e Padrões de Projeto
-Existem especificações ou diretrizes que regem os nosso projetos aqui e são determinadas pelas tecnologias que usamos e os padrões de mercado impostos. É **extremamente importante mantermos esses padrões**, principalmente se você for analista ou mais novo aqui no núcleo, mas também pra evitar redundâncias e código duplicado. É possível entender por meio do template base esses padrões, porém também criamos arquivos markdown para facilitar isso, podendo ser encontrados nas pastas **/web/docs** ou **/mobile/docs**, sobre better-auth e specs de api por exemplo.
+
+Existem especificações que regem os nossos projetos e é **extremamente importante mantê-las**, principalmente para evitar redundâncias e código duplicado. Documentação completa em `/web/docs`.
 
 Exemplos de especificações:
-- uso de ícones do lucide-react e fontes do next/font
-- uso de alertas com toast.success/toast.error
-- uso de funções utilitárias como blockForbiddenRequests, toErrorMessage, getUserFromRequest
-- params sendo do tipo Promise
-E outras boas práticas de clean code no geral
+- Ícones do `lucide-react` e fontes do `next/font`
+- Alertas com `toast.success` / `toast.error` (react-hot-toast)
+- Funções utilitárias: `blockForbiddenRequests`, `toErrorMessage`, `getUserFromRequest`, `returnInvalidDataErrors`
+- Rotas sempre no plural: `/api/users`, `/api/lessons`
+- Componentes < 200 linhas; SOLID principles
+- Nunca usar `@auth/prisma-adapter` — o repo usa `better-auth/adapters/prisma`
 
 ## Atualizando o monorepo
 Se você é liderança técnica, coord ou só busca ajudar a atualizar o monorepo, parabéns!!! Existem alguns passos que devem ser seguidos e alguns pensamentos de arquitetura que devemos ter em mente antes de damros merge nesse repo ou de fazer seu PR **(sim, não é pra commitar na main!!!!!!)**. 
@@ -64,5 +138,5 @@ Considerações e dicas:
 - Essa novidade é fácil de entender?
 - Por quanto tempo essa lib será mantida? Ela tem um time de suporte ativo?
 - Quanto código duplicado isso gera?
-#### Sobre PRs
-Lembre-se de fazer bons nomes e descrições no PR, além de bons commits. Sinta-se à vontade pra juntar essas mudanças de um mesmo tema, fazer seus commits e mandar um PR?
+
+Lembre-se de fazer bons nomes e descrições no PR, além de bons commits.

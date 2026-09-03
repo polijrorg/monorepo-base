@@ -1,42 +1,42 @@
-import { useState } from "react";
-import { View, TextInput, TouchableOpacity, Text, Alert, ActivityIndicator } from "react-native";
-import { useAuth } from "~/contexts/AuthContext";
+import { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Text, Alert, ActivityIndicator } from 'react-native';
+import { useAuth } from '~/contexts/AuthContext';
 
 export default function LoginScreen() {
   const { signIn, signInWithGoogle, isLoading: authLoading } = useAuth();
-  
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
     setIsLoading(true);
-    
+
     const result = await signIn(email, password);
-    console.log(result)
-    
+    console.log(result);
+
     if (!result.success) {
-      Alert.alert("Login Failed", result.error || "An error occurred");
+      Alert.alert('Login Failed', result.error || 'An error occurred');
     }
     // If successful, the AuthProvider will handle navigation
-    
+
     setIsLoading(false);
   };
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
-    
+
     const result = await signInWithGoogle();
-    
+
     if (!result.success) {
-      Alert.alert("Login Failed", result.error || "Google login failed");
+      Alert.alert('Login Failed', result.error || 'Google login failed');
     }
-    
+
     setIsLoading(false);
   };
 
@@ -50,11 +50,11 @@ export default function LoginScreen() {
   }
 
   return (
-    <View className="flex-1 p-5 justify-center">
+    <View className="flex-1 justify-center p-5">
       <Text className="font-bold" style={{ fontSize: 32, marginBottom: 40, textAlign: 'center' }}>
         Sign In
       </Text>
-      
+
       <TextInput
         placeholder="Email"
         value={email}
@@ -70,7 +70,7 @@ export default function LoginScreen() {
           fontSize: 16,
         }}
       />
-      
+
       <TextInput
         placeholder="Password"
         value={password}
@@ -85,7 +85,7 @@ export default function LoginScreen() {
           fontSize: 16,
         }}
       />
-      
+
       <TouchableOpacity
         onPress={handleLogin}
         disabled={isLoading}
@@ -94,8 +94,7 @@ export default function LoginScreen() {
           padding: 15,
           borderRadius: 8,
           marginBottom: 15,
-        }}
-      >
+        }}>
         {isLoading ? (
           <ActivityIndicator color="white" />
         ) : (
@@ -104,7 +103,7 @@ export default function LoginScreen() {
           </Text>
         )}
       </TouchableOpacity>
-      
+
       <TouchableOpacity
         onPress={handleGoogleLogin}
         disabled={isLoading}
@@ -113,8 +112,7 @@ export default function LoginScreen() {
           padding: 15,
           borderRadius: 8,
           marginBottom: 20,
-        }}
-      >
+        }}>
         {isLoading ? (
           <ActivityIndicator color="white" />
         ) : (
@@ -123,7 +121,7 @@ export default function LoginScreen() {
           </Text>
         )}
       </TouchableOpacity>
-      
+
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
         <Text>Não tem uma conta? </Text>
         {/* <Link href="/(auth)/signup" style={{ color: '#007bff', fontWeight: 'bold' }}>

@@ -1,5 +1,5 @@
 {
-  "name": "mobile-2",
+  "name": "mobile",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {

@@ -1,0 +1,107 @@
+name: Mobile Release
+
+# Lança uma versão nova do app nas lojas a partir de uma tag (detalhes em mobile/docs/DEPLOY.md, seção 11):
+#   1. Suba o "version" do mobile/app.json (ex.: 1.2.0) e faça o merge na main.
+#   2. git tag mobile-v1.2.0 && git push origin mobile-v1.2.0
+# O workflow confere a tag, gera os builds de produção e envia pras lojas:
+# Android → trilha do submit.production.android do eas.json; iOS → TestFlight.
+# Publicar pro usuário final continua sendo feito no Play Console e no App Store Connect.
+
+on:
+  push:
+    tags: ['mobile-v*']
+
+concurrency:
+  group: mobile-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build e envio pras lojas
+    runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      # Plataformas do release: all (padrão), android ou ios.
+      # Ex.: "android" enquanto a conta Apple não está pronta.
+      # Configure em Settings → Secrets and variables → Actions → Variables.
+      PLATFORM: ${{ vars.MOBILE_RELEASE_PLATFORM || 'all' }}
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      - name: Verificar EXPO_TOKEN
+        if: env.EXPO_TOKEN == ''
+        working-directory: .
+        run: |
+          echo "::error::Secret EXPO_TOKEN não configurado. Veja mobile/docs/DEPLOY.md, seção 11."
+          exit 1
+
+      # fetch-depth 0 traz a main, pra conferir de onde a tag saiu
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Conferir se a tag está na main
+        run: |
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::A tag aponta pra um commit que não está na main. Faça o merge antes de criar a tag."
+            exit 1
+          fi
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Tag × version do app.json, updates.url × projectId e, se tiver iOS, o ascAppId
+      - name: Conferir config de deploy
+        env:
+          TAG: ${{ github.ref_name }}
+          IOS_SUBMIT: ${{ (vars.MOBILE_RELEASE_PLATFORM || 'all') != 'android' && '--ios-submit' || '' }}
+        run: node scripts/check-deploy-config.js --tag "$TAG" $IOS_SUBMIT
+
+      # --no-wait: o job termina logo e os builds seguem na nuvem da Expo.
+      # --auto-submit: o próprio EAS envia pras lojas quando cada build termina.
+      - name: Build + envio
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          eas build \
+            --platform "$PLATFORM" \
+            --profile production \
+            --auto-submit \
+            --what-to-test "Release $TAG" \
+            --non-interactive \
+            --no-wait
+
+      - name: Próximos passos
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          {
+            echo "## Release $TAG enviado pro EAS"
+            echo ""
+            echo "Os builds rodam na nuvem da Expo e são enviados pras lojas quando terminam."
+            echo "Acompanhe em expo.dev → projeto → Builds e Submissions."
+            echo ""
+            echo "Ainda falta publicar pro usuário final:"
+            if [ "$PLATFORM" != "ios" ]; then
+              echo "- **Android:** no Play Console, promova a versão da trilha interna pra produção."
+            fi
+            if [ "$PLATFORM" != "android" ]; then
+              echo "- **iOS:** no App Store Connect, crie a versão, selecione o build do TestFlight e envie pra revisão."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

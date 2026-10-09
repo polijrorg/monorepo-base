@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "base",
+    "name": "Deploy teste",
     "slug": "base",
     "version": "1.0.0",
-    "scheme": "base",
+    "scheme": "deployteste",
     "runtimeVersion": {
       "policy": "fingerprint"
     },
     "updates": {
-      "url": "https://u.expo.dev/8fbe051c-1cef-450e-b15a-e3533843f21f"
+      "url": "https://u.expo.dev/acffd956-c8c5-476c-acb2-b17cbf78dde0"
     },
     "web": {
       "bundler": "metro",
@@ -38,14 +38,14 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "bundleIdentifier": "br.com.polijunior.base",
+      "bundleIdentifier": "br.com.polijunior.deployteste.dev",
       "supportsTablet": true,
       "config": {
         "usesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "br.com.polijunior.base",
+      "package": "br.com.polijunior.deployteste.dev",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -56,6 +56,7 @@
       "eas": {
         "projectId": "acffd956-c8c5-476c-acb2-b17cbf78dde0"
       }
-    }
+    },
+    "owner": "frankrocha"
   }
 }

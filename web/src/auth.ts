@@ -8,13 +8,13 @@ import { getUserRole } from "@/backend/services/auth";
 import { expo } from "@better-auth/expo";
 // import { sendEmail } from "./lib/email";
 // import { ResetPasswordEmail } from "./lib/email/templates/ResetPasswordEmail";
- 
+
 export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
     database: prismaAdapter(prisma, {
         provider: "mongodb",
     }),
-    emailAndPassword: {  
+    emailAndPassword: {
       enabled: true,
       // sendResetPassword: async ({ user, url /*, token*/ }, ) => {
         // // url already includes the reset token; just email it.
@@ -30,7 +30,7 @@ export const auth = betterAuth({
       // },
     },
     user: {
-        deleteUser: { 
+        deleteUser: {
             enabled: true
         },
         changeEmail: {
@@ -45,12 +45,12 @@ export const auth = betterAuth({
         }
     },
     // Descomente abaixo para ativar o provedor social google e login com google funcionar
-    // socialProviders: { 
-    //     google: { 
-    //        clientId: process.env.GOOGLE_ID as string, 
-    //        clientSecret: process.env.GOOGLE_SECRET as string, 
-    //     }, 
-    // }, 
+    // socialProviders: {
+    //     google: {
+    //        clientId: process.env.GOOGLE_ID as string,
+    //        clientSecret: process.env.GOOGLE_SECRET as string,
+    //     },
+    // },
     plugins: [
         expo(),
         customSession(async ({ user, session }) => {
@@ -64,7 +64,7 @@ export const auth = betterAuth({
         nextCookies(),
     ],
     trustedOrigins: [
-        "noctiluz://",
-        "noctiluz://*",
+        "deployteste://",
+        "deployteste://*",
     ]
 });

@@ -5,6 +5,7 @@ name: Mobile (EAS)
 # - push na dev  → EAS Update no channel "preview"    (builds de preview recebem o JS novo)
 # - push na main → EAS Update no channel "production" (apps da loja recebem o JS novo)
 # - disparo manual → EAS Build (+ envio pras lojas, opcional)
+# - tag mobile-vX.Y.Z → release nas lojas (fica no mobile-release.yml)
 # Com runtimeVersion "fingerprint", update que depende de mudança nativa não chega em build antigo.
 
 on:
@@ -14,6 +15,7 @@ on:
       - 'mobile/**'
       - 'pnpm-lock.yaml'
       - '.github/workflows/eas.yml'
+      - '.github/workflows/mobile-release.yml'
 
   push:
     branches: [dev, main]
@@ -64,6 +66,9 @@ jobs:
       - name: Validar config do Expo
         run: npx expo config --type public > /dev/null
 
+      - name: Conferir config de deploy
+        run: node scripts/check-deploy-config.js
+
       - name: Lint
         run: pnpm lint
 
@@ -112,6 +117,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Conferir config de deploy
+        run: node scripts/check-deploy-config.js
 
       # main → production, dev → preview. O --environment é obrigatório no SDK 55+:
       # sem ele o update sai sem as variáveis EXPO_PUBLIC_* do EAS (e no CI o eas-cli não avisa).
@@ -162,6 +170,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Conferir config de deploy
+        env:
+          IOS_SUBMIT: ${{ inputs.submit && inputs.profile == 'production' && inputs.platform != 'android' && '--ios-submit' || '' }}
+        run: node scripts/check-deploy-config.js $IOS_SUBMIT
 
       # --no-wait: o job termina logo e o build segue na nuvem da Expo (acompanhe em expo.dev).
       # --auto-submit: o próprio EAS envia pras lojas quando o build terminar.

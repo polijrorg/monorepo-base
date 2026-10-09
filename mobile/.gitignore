@@ -7,6 +7,8 @@ npm-debug.*
 *.p12
 *.key
 *.mobileprovision
+credentials.json
+google-service-account*.json
 *.orig.*
 web-build/
 # expo router
@@ -22,3 +24,6 @@ android
 
 # Temporary files created by Metro to check the health of the file watcher
 .metro-health-check*
+
+# builds locais (eas build --local --output ./build/...)
+/build

@@ -31,10 +31,9 @@ describe('POST /api/users', () => {
   it('should register if everything is alright', async () => {
     (userService.findUserByEmail as Mock).mockResolvedValue(null);
 
-    if (!('api' in auth)) {
-      auth.api = {};
-    }
-    (auth.api.signUpEmail as unknown as Mock) = vi.fn().mockResolvedValue(postUserMock);
+    const authMock = auth as any;
+    authMock.api ??= {};
+    (authMock.api.signUpEmail as unknown as Mock) = vi.fn().mockResolvedValue(postUserMock);
     
     const response = await POST(createUserRequest());
     expect(response?.status).toBe(201);

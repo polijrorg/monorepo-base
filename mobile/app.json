@@ -1,9 +1,15 @@
 {
   "expo": {
-    "name": "noctiluz",
-    "slug": "noctiluz",
+    "name": "base",
+    "slug": "base",
     "version": "1.0.0",
-    "scheme": "noctiluz",
+    "scheme": "base",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/8fbe051c-1cef-450e-b15a-e3533843f21f"
+    },
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -13,7 +19,16 @@
       "expo-router",
       "expo-web-browser",
       "expo-secure-store",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
@@ -22,18 +37,15 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "br.com.polijunior.base",
+      "supportsTablet": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "br.com.polijunior.base",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -42,9 +54,8 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "8fbe051c-1cef-450e-b15a-e3533843f21f"
+        "projectId": "acffd956-c8c5-476c-acb2-b17cbf78dde0"
       }
-    },
-    "owner": "polijr"
+    }
   }
 }

@@ -1,160 +1,173 @@
-name: Deploy Mobile App
+name: Mobile (EAS)
+
+# Fluxo (detalhes em mobile/docs/DEPLOY.md, seção 11):
+# - PR pra dev/main mexendo no mobile → valida (config, lint, typecheck, bundle). Não usa EAS.
+# - push na dev  → EAS Update no channel "preview"    (builds de preview recebem o JS novo)
+# - push na main → EAS Update no channel "production" (apps da loja recebem o JS novo)
+# - disparo manual → EAS Build (+ envio pras lojas, opcional)
+# Com runtimeVersion "fingerprint", update que depende de mudança nativa não chega em build antigo.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'mobile/**'
-      
   pull_request:
-    branches: [main]
+    branches: [dev, main]
     paths:
       - 'mobile/**'
-  
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/eas.yml'
+
+  push:
+    branches: [dev, main]
+    paths:
+      - 'mobile/**'
+
   workflow_dispatch:
     inputs:
       platform:
-        description: 'Platform to build (ios, android, all)'
-        required: true
-        default: 'all'
+        description: 'Plataforma'
         type: choice
-        options:
-          - ios
-          - android
-          - all
+        options: [all, android, ios]
+        default: all
+      profile:
+        description: 'Profile do eas.json'
+        type: choice
+        options: [preview, production]
+        default: preview
       submit:
-        description: 'Submit to stores after build'
-        required: true
-        default: false
+        description: 'Enviar pras lojas quando o build terminar (só com profile production)'
         type: boolean
-
-env:
-  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        default: false
 
 jobs:
-  build:
-    name: Build and Submit
+  validate:
+    name: Validar mobile
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    
+    defaults:
+      run:
+        working-directory: mobile
+
     steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
-      - name: 🏗 Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: pnpm
 
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          expo-version: latest
-          eas-version: 16.13.3
-          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: 📦 Install dependencies
-        run: pnpm install
+      - name: Validar config do Expo
+        run: npx expo config --type public > /dev/null
 
-      # - name: 🚨 Run tests (optional)
-      #   run: pnpm test --if-present
+      - name: Lint
+        run: pnpm lint
 
-      - name: 📋 Validate Expo config
-        run: npx expo config --type public
+      - name: Typecheck
+        run: npx tsc --noEmit
 
-      # Production builds (Push to main or manual dispatch)
-      - name: 🚀 Build iOS (Production)
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch' && 
-           (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all'))
-        run: eas build --platform ios --profile production --non-interactive --wait
+      - name: Bundle JS (Android e iOS)
+        run: npx expo export --platform android --platform ios --output-dir "$RUNNER_TEMP/expo-export"
 
-      - name: 🚀 Build Android (Production)
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch' && 
-           (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all'))
-        run: eas build --platform android --profile production --non-interactive --wait
+  update:
+    name: EAS Update
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: eas-update-${{ github.ref_name }}
+      cancel-in-progress: false
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    defaults:
+      run:
+        working-directory: mobile
 
-      # Deploy OTA Update
-      - name: 🚢 Deploy Update (Production)
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch')
-        run: eas update --branch production --message "Deploy from GitHub Actions"
-
-      - name: Setup credentials
+    steps:
+      - name: Verificar EXPO_TOKEN
+        if: env.EXPO_TOKEN == ''
+        working-directory: .
         run: |
-          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > google-services.json
+          echo "::error::Secret EXPO_TOKEN não configurado. Veja mobile/docs/DEPLOY.md, seção 11."
+          exit 1
 
-      # Submit to stores (only for production builds)
-      - name: 🍎 Submit iOS to App Store
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.submit == 'true')
-        run: eas submit --platform ios --latest --non-interactive
+      - uses: actions/checkout@v4
 
-      - name: 🤖 Submit Android to Play Store
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.submit == 'true')
-        run: eas submit --platform android --latest --non-interactive
-
-      # Notify about build completion
-      - name: 📱 Comment PR with build info
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+      - uses: pnpm/action-setup@v4
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `✅ Build completed for both platforms! 
-              
-              Preview builds are ready for testing.
-              Check the [Expo dashboard](https://expo.dev) for download links.`
-            })
+          version: 10
 
-  # Job separado para deploy de updates apenas
-  deploy-update:
-    name: Deploy Update Only
-    runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'push' && 
-      github.ref == 'refs/heads/production' &&
-      !contains(github.event.head_commit.message, '[build]')
-    
-    steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v4
-
-      - name: 🏗 Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: pnpm
 
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
+      - uses: expo/expo-github-action@v8
         with:
-          expo-version: latest
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
-        run: pnpm install
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: 🚢 Deploy Update to Production
+      # main → production, dev → preview. O --environment é obrigatório no SDK 55+:
+      # sem ele o update sai sem as variáveis EXPO_PUBLIC_* do EAS (e no CI o eas-cli não avisa).
+      - name: Publicar update
+        env:
+          TARGET: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          eas update --branch production --message "Update from ${{ github.sha }}"
-          
-      - name: 🚢 Deploy Update to Preview (if exists)
+          eas update \
+            --channel "$TARGET" \
+            --environment "$TARGET" \
+            --message "${COMMIT_MESSAGE%%$'\n'*}" \
+            --non-interactive
+
+  build:
+    name: EAS Build
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      - name: Verificar EXPO_TOKEN
+        if: env.EXPO_TOKEN == ''
+        working-directory: .
         run: |
-          eas update --branch preview --message "Update from ${{ github.sha }}" || echo "Preview branch not found, skipping"
+          echo "::error::Secret EXPO_TOKEN não configurado. Veja mobile/docs/DEPLOY.md, seção 11."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # --no-wait: o job termina logo e o build segue na nuvem da Expo (acompanhe em expo.dev).
+      # --auto-submit: o próprio EAS envia pras lojas quando o build terminar.
+      - name: Build
+        env:
+          PLATFORM: ${{ inputs.platform }}
+          PROFILE: ${{ inputs.profile }}
+          SUBMIT: ${{ inputs.submit && inputs.profile == 'production' && '--auto-submit' || '' }}
+        run: eas build --platform "$PLATFORM" --profile "$PROFILE" --non-interactive --no-wait $SUBMIT

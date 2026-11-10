@@ -1,0 +1,40 @@
+# TEMPORÁRIO: gera o pnpm-lock.yaml no GitHub (a sessão que criou o PR não tinha acesso ao npm).
+# Roda uma vez neste branch e é removido no commit seguinte.
+name: Atualizar lockfile
+
+on:
+  push:
+    branches: [feat/ia-embarcada]
+    paths:
+      - '.github/workflows/update-lockfile.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/ia-embarcada
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Gerar lockfile
+        run: pnpm install --lockfile-only
+
+      - name: Commitar lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add pnpm-lock.yaml
+          git diff --cached --quiet && echo "lockfile já estava em dia" && exit 0
+          git commit -m "chore: atualiza pnpm-lock.yaml com @ntec/ai e AI SDK 7"
+          git push

@@ -1,0 +1,88 @@
+# CI da IA embarcada. O /setup apaga este arquivo se o projeto não usar IA.
+#
+# - "Pacote de IA": testes e typecheck de packages/ai em todo PR que toca IA (grátis, sem modelo real).
+# - "Evals": roda o conjunto de casos contra o modelo real. Custa tokens, então só roda
+#   manualmente (Actions > CI IA > Run workflow) ou em PR com a label "evals".
+#   Rode sempre antes de: trocar de modelo, mudar o prompt, mudar ferramentas, entregar ao cliente.
+name: CI IA
+
+on:
+  push:
+    branches: [dev, main]
+    paths:
+      - 'packages/ai/**'
+      - 'web/src/app/(backend)/services/ai/**'
+      - 'web/tests/evals/**'
+  pull_request:
+    branches: [dev, main]
+    types: [opened, synchronize, reopened, labeled]
+    paths:
+      - 'packages/ai/**'
+      - 'web/src/app/(backend)/services/ai/**'
+      - 'web/tests/evals/**'
+  workflow_dispatch:
+    inputs:
+      trials:
+        description: 'Tentativas por caso (3 mede consistência)'
+        default: '1'
+
+jobs:
+  package:
+    name: Pacote de IA
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm --filter @ntec/ai typecheck
+
+      - name: Unit tests
+        run: pnpm --filter @ntec/ai test
+
+  evals:
+    name: Evals (modelo real)
+    runs-on: ubuntu-latest
+    needs: package
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'evals')
+    env:
+      AI_GATEWAY_API_KEY: ${{ secrets.AI_GATEWAY_API_KEY }}
+      AI_EVALS_TRIALS: ${{ github.event.inputs.trials || '1' }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run evals
+        run: pnpm --filter web test:evals
+
+      - name: Upload eval report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-report
+          path: web/tests/evals/report.md
+          retention-days: 30

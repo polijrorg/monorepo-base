@@ -9,6 +9,7 @@ This is the NTec (PoliJunior) monorepo template — a full-stack web + mobile fr
 - `web/` — Next.js 16 full-stack app (frontend + backend API)
 - `mobile/` — Expo 55 (React Native) app
 - `bruno/` — Bruno API collection for documenting and testing endpoints
+- `packages/ai/` — optional embedded-AI core (`@ntec/ai`); removed by `/setup` when the project has no AI
 
 ## Common Commands
 
@@ -134,9 +135,22 @@ Integration tests (Vitest) live in `web/tests/integration/`. All new API routes 
 
 E2E tests (Playwright) live in `web/tests/e2e/`.
 
+## IA embarcada
+
+Optional layer. When present, read `web/docs/AI.md` and follow the `ai-patterns` skill before touching AI code.
+
+- `packages/ai/` (`@ntec/ai`): models by alias (`fast`/`smart`), `streamAgent`/`runAgent`, `extractStructured`, `defineTool`, guardrails, RAG helpers, eval harness. Server-only.
+- `web/src/app/(backend)/services/ai/`: project-specific prompts (versioned), tools (wrap existing services), RAG, telemetry.
+- `web/src/app/(backend)/api/ai/`: `chat` (streaming), `documents` (RAG ingestion), `feedbacks`.
+- `web/src/components/ai/`: `AiChat` and parts (tool status, approval, sources, feedback).
+- Tools: use `/new-ai-tool`. Every tool wraps a service, checks permission with the server `ctx`, and declares its `risk` (`write`/`irreversible` require user approval).
+- Commands: `pnpm --filter @ntec/ai test` (unit), `pnpm --filter web test:evals` (real model, costs tokens), `pnpm --filter web ai:vector-index` (Atlas vector index).
+- Any change to a prompt, tool or model requires running the evals and attaching `web/tests/evals/report.md` to the PR.
+
 ## Key Docs
 
 - `web/docs/API.md` — REST API specs and patterns
 - `web/docs/BETTER-AUTH.md` — Auth library usage and constraints
 - `web/docs/FRONTEND.md` — Frontend component and import patterns
+- `web/docs/AI.md` — Embedded AI: architecture, tools, RAG, evals, guardrails, cost, LGPD
 - `bruno/` — API request collections for manual testing

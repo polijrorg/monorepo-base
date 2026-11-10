@@ -7,6 +7,7 @@
 4. [Claude Code — Agents, Skills e Comandos](#claude-code--agents-skills-e-comandos)
 5. [Specs e Padrões de Projeto](#specs-e-padrões-de-projeto)
 6. [Atualizando o monorepo](#atualizando-o-monorepo)
+7. [IA embarcada](#ia-embarcada)
 
 ## Introdução
 Esse é o repositório principal do NTec e engloba todo nosso escopo de dev/delivery. Nele temos algumas pastas que correspondem a uma funcionalidade no geral:
@@ -16,6 +17,7 @@ Esse é o repositório principal do NTec e engloba todo nosso escopo de dev/deli
 - `/bruno` — documentador de APIs, usado pra mandar requests e facilitar a vida do front
 - `/mobile` — front mobile com Expo e NativeWind
 - `/web` — Next.js, Prisma e tecnologias de front web e back
+- `/packages/ai` — núcleo de IA embarcada, opcional (ver [IA embarcada](#ia-embarcada))
 - `/.vscode` — configs do editor, sinta-se à vontade pra customizar
 
 ## Setup e Início de Projeto
@@ -140,3 +142,17 @@ Considerações e dicas:
 - Quanto código duplicado isso gera?
 
 Lembre-se de fazer bons nomes e descrições no PR, além de bons commits.
+
+## IA embarcada
+
+Camada opcional para projetos que incluem IA no escopo: o `/setup` pergunta e, se o projeto não usar IA, remove tudo (pacote, rotas, telas, variáveis e dependências).
+
+Quando ativa, o projeto já nasce com:
+- **`packages/ai` (`@ntec/ai`)**: modelos por apelido (`fast`/`smart`) com fallback e prompt caching pelo Vercel AI Gateway, agente com ferramentas em streaming, extração estruturada validada pelo Zod, RAG no MongoDB Atlas e harness de evals.
+- **Assistente de exemplo** em `/assistente`, com três ferramentas: busca nos documentos do usuário, leitura com permissão por papel e escrita com confirmação na tela.
+- **Guardrails**: aprovação humana para escrita, limite de gasto por usuário, limites de entrada e saída, escopo obrigatório na busca vetorial, proteção contra prompt injection.
+- **Telemetria** de custo, tokens e latência por chamada (coleção `ai_call`) e feedback do usuário (`ai_feedback`).
+- **Evals** contra o modelo real (`pnpm --filter web test:evals`), com relatório em markdown para anexar ao aceite.
+- **Claude Code**: agente `/agent:ai`, comando `/new-ai-tool` e a skill automática `ai-patterns`.
+
+Guia completo, com o protocolo de evals e o checklist de produção: [`web/docs/AI.md`](web/docs/AI.md).

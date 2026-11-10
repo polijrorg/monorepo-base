@@ -5,10 +5,12 @@ on:
     branches: [dev, main]
     paths:
       - 'web/**'
+      - 'packages/**'
   pull_request:
     branches: [dev, main]
     paths:
       - 'web/**'
+      - 'packages/**'
 
 jobs:
   lint:
@@ -23,7 +25,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: pnpm
 
       - name: Install dependencies
@@ -44,7 +46,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: pnpm
 
       - name: Install dependencies
@@ -68,7 +70,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: pnpm
 
       - name: Install dependencies
@@ -95,7 +97,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: pnpm
 
       - name: Install dependencies

@@ -35,6 +35,71 @@ model User {
 
 // crie modelos novos!
 
+// >>> IA embarcada (o /setup remove este bloco se o projeto não usar IA)
+// Telemetria: uma linha por chamada de IA. Guarda números e ids, nunca o texto da conversa.
+model AiCall {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId              String
+  feature             String
+  model               String
+  promptVersion       String?
+  conversationId      String?
+  inputTokens         Int      @default(0)
+  uncachedInputTokens Int      @default(0)
+  cacheReadTokens     Int      @default(0)
+  cacheWriteTokens    Int      @default(0)
+  outputTokens        Int      @default(0)
+  costUsd             Float?
+  latencyMs           Int
+  steps               Int?
+  toolNames           String[]
+  finishReason        String?
+  error               String?
+  createdAt           DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([feature, createdAt])
+  @@map("ai_call")
+}
+
+enum AiRating {
+  UP
+  DOWN
+}
+
+// Feedback do usuário (polegar). As respostas com DOWN viram casos novos de eval.
+model AiFeedback {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String
+  feature        String
+  conversationId String?
+  messageId      String
+  rating         AiRating
+  comment        String?
+  createdAt      DateTime @default(now())
+
+  @@unique([userId, messageId])
+  @@map("ai_feedback")
+}
+
+// Trechos de documentos para RAG. `ownerId` é o escopo de permissão da busca;
+// em projeto com empresas/equipes, troque ou some um `tenantId`.
+// O índice vetorial é criado por `pnpm --filter web ai:vector-index` (o db push não cria).
+model AiChunk {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId    String
+  sourceId   String
+  sourceName String
+  index      Int
+  text       String
+  embedding  Float[]
+  createdAt  DateTime @default(now())
+
+  @@index([ownerId, sourceId])
+  @@map("ai_chunk")
+}
+// <<< IA embarcada
+
 
 
 

@@ -1,6 +1,8 @@
 import { type NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // IA embarcada: o pacote @ntec/ai é publicado como TypeScript (o /setup remove se o projeto não usar IA)
+  transpilePackages: ['@ntec/ai'],
   turbopack: {
     rules: {
       '*.svg': {

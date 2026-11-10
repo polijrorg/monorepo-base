@@ -13,17 +13,22 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test:evals": "vitest run --config vitest.evals.config.ts",
+    "ai:vector-index": "node --env-file=.env scripts/ai-vector-index.mjs"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.170",
     "@auth/prisma-adapter": "^2.11.1",
     "@better-auth/expo": "^1.5.5",
+    "@ntec/ai": "workspace:*",
     "@prisma/client": "^6.18.0",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@react-email/render": "^1.4.0",
+    "ai": "^7.0.166",
     "bcryptjs": "^3.0.2",
     "better-auth": "^1.5.5",
     "class-variance-authority": "^0.7.1",
@@ -47,7 +52,7 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
-    "@types/node": "^20.17.57",
+    "@types/node": "^22.10.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^5.1.0",
@@ -62,5 +67,8 @@
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.5"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

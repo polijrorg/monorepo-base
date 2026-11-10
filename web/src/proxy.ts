@@ -7,6 +7,7 @@ import type { Role } from "./generated/prisma";
 const ROUTE_CONFIG = {
   authRequired: [
     "/aprender",
+    "/assistente", // IA embarcada (o /setup remove se o projeto não usar IA)
     "/dashboard",
     "/perfil",
     "/settings",

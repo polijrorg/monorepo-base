@@ -1,0 +1,20 @@
+meta {
+  name: feedbacks
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/{{folder}}/feedbacks
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "messageId": "m2",
+    "conversationId": "conversa-bruno",
+    "rating": "DOWN",
+    "comment": "Inventou um prazo que não está no documento"
+  }
+}

@@ -1,0 +1,28 @@
+meta {
+  name: chat
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/{{folder}}/chat
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id": "conversa-bruno",
+    "messages": [
+      {
+        "id": "m1",
+        "role": "user",
+        "parts": [{ "type": "text", "text": "O que dizem meus documentos sobre reembolso?" }]
+      }
+    ]
+  }
+}
+
+docs {
+  Resposta em streaming (UI message stream do AI SDK). No Bruno ela aparece como texto bruto, em eventos.
+}

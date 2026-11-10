@@ -1,0 +1,19 @@
+meta {
+  name: documents
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/{{folder}}/documents
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceId": "politica-reembolso",
+    "sourceName": "reembolso.pdf",
+    "text": "Política de reembolso. O cliente pode pedir reembolso em até 30 dias corridos após a compra.\n\nO valor é devolvido por estorno no mesmo meio de pagamento."
+  }
+}

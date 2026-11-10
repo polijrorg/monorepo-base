@@ -2,3 +2,5 @@ packages:
   - web
   - bruno
   - mobile
+  # IA embarcada (opcional): o /setup remove esta linha e a pasta se o projeto não usar IA
+  - packages/*

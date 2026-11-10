@@ -1,0 +1,31 @@
+{
+  "name": "@ntec/ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Núcleo de IA embarcada do NTec: modelos, custo, guardrails, RAG e evals. Opcional: o /setup remove se o projeto não usar IA.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/testing.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ai": "^7.0.166"
+  },
+  "peerDependencies": {
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5",
+    "vitest": "^4.0.5",
+    "zod": "^4.3.6"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
